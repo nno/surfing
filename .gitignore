@@ -1,0 +1,14 @@
+*.DS_Store
+*.swp
+*.css
+*.m~
+data
+datadb
+datadb.zip
+.git.bfg-report
+*.md.sw?
+*~lock*
+doc/surfing
+doc/helpfiles
+doc/main.*
+*.sw?
