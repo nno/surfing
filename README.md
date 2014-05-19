@@ -24,11 +24,9 @@ Requirements
 
 Developers
 ----------
-Contact:
-
-- Nikolaas N. Oosterhof [NNO]   <nikolaas.oosterhof at unitn.it>
-- Tobias Wiestler [TW]          <tobias.wiestler at googlemail.com>
-- Joern Diedrichsen [JD]        <j.diedrichsen at ucl.ac.uk>
+- Nikolaas N. Oosterhof [NNO], nikolaas.oosterhof at unitn.it
+- Tobias Wiestler [TW], tobias.wiestler at googlemail.com
+- Joern Diedrichsen [JD], j.diedrichsen at ucl.ac.uk
 
 Quick start
 -----------
@@ -38,7 +36,8 @@ Quick start
 
 More information
 ----------------
-see http://sourceforge.net/surfing
+- http://sourceforge.net/surfing
+- https://github.com/nno/surfing
 
 License
 -------
