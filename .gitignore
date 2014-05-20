@@ -12,3 +12,4 @@ doc/surfing
 doc/helpfiles
 doc/main.*
 *.sw?
+*.pyc
