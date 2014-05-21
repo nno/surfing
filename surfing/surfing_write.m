@@ -140,10 +140,10 @@ elseif ends_with(fn,'.srf')
             nbrs_cell{k,2}=nbrs(k,msk);
         end
         x.Neighbors=nbrs_cell;
-        
-        % set normals
-        x.VertexNormal=surfing_normals(v,f);
     end
+    
+    % recalculate normals
+    x.RecalcNormals();
     
     x.SaveAs(fn);
 
