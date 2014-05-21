@@ -91,7 +91,7 @@ elseif ends_with(fn,'.gii')
         g=gifti(params);
     end
     
-    save(fn,g);
+    save(g,fn);
     
 elseif ends_with(fn,'.srf')
     % requires neuroelf
