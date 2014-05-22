@@ -108,7 +108,7 @@ elseif ends_with(fn,'.srf')
     else
         % build from scratch
         x=xff('new:srf');
-
+         
         % transformation for ASR to LPI
         asr2lpi=[0 -1 0;0 0 -1;-1 0 0];
 
@@ -127,26 +127,35 @@ elseif ends_with(fn,'.srf')
         nf=size(x.TriangleVertex,1);
         x.NrOfVertices=nv;
         x.NrOfTriangles=nf;
+        %set to grey
+        x.VertexColor= [NaN(nv, 1), repmat([60, 60, 60], [nv,1])];
         
-        % set all vertex colors to zero (CHECKME)
-        x.VertexColor=zeros(nv,4);
-        
-        % set neighbors
-        nbrs_cell=cell(nv,2);
-        nbrs=surfing_surface_nbrs(f);
-        for k=1:nv
-            msk=nbrs(k,:)>0;
-            nbrs_cell{k,1}=sum(msk);
-            nbrs_cell{k,2}=nbrs(k,msk);
-        end
-        x.Neighbors=nbrs_cell;
+        %surfing_surface_nbrs returns the same neighbors as neuroelf's
+        %TrianglesToNeighbors method, but in a different order. This seems
+        %to matter for BrainVoyager. Therefore we use NeuroElf's method to
+        %set neighbors when dealing with BrainVoyager surfaces
+        nei = x.TrianglesToNeighbors;
+        x.Neighbors = nei;
     end
     
-    % recalculate normals
+    %recalculate normals
+    %some pretty colors
+    x.ConvexRGBA = [0.6 0.6 0.6 1];
+    x.ConcaveRGBA =  [0.3 0.3 0.3 1]; 
+   
+    
     x.RecalcNormals();
     
+    %ADD CURVATURE INFO
+    smp = x.CurvatureMap;
+    cases_concave = find(smp.Map.SMPData < 0);
+    x.VertexColor(cases_concave, :) = repmat(x.ConcaveRGBA, [length(cases_concave), 1]);
+    
     x.SaveAs(fn);
-
+    
+    %clearing objects leads to more stable behavior of
+    %NeuroElf (at least this was true for its predecessor BVQXtools)
+    x.ClearObject;
     
 elseif ends_with(fn,'.niml.dset')
     % AFNI NIML
