@@ -76,7 +76,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
          }
          nymask=mxGetM(prhs[1]) * mxGetN(prhs[1]); /* number of elements in mask */
          if (nymask==0) {
-             hasymask=false;
+             hasymask=0;
          } else {
              ymask = mxGetPr(prhs[1]); /* pointer to mask */
          }
