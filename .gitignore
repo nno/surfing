@@ -13,3 +13,5 @@ doc/helpfiles
 doc/main.*
 *.sw?
 *.pyc
+*.o
+*.mex
