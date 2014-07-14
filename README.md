@@ -1,6 +1,6 @@
 Surfing
 =======
-Surfing is a Matlab toolbox for surface-based voxel neighborhood selection on the cerebral cortex, intended for informationg mapping of functional magnetic resonance imaging (fMRI) data. 
+Surfing is a Matlab / Octave toolbox for surface-based voxel neighborhood selection on the cerebral cortex, intended for informationg mapping of functional magnetic resonance imaging (fMRI) data. 
 
 Features
 --------
@@ -16,11 +16,13 @@ Non-features
 
 Requirements
 ------------
-- A working installation of Matlab
-- For geodesic distance metrics a working mex compiler environment may be required
-- GIFTI surfaces require the GIFTI matlab toolbox: http://www.artefact.tk/software/matlab/gifti
-- BrainVoyager surfaces require Neuroelf: neuroelf.net
-- AFNI NIML I/O requires the AFNI matlab toolbox: http://afni.nimh.nih.gov/afni/matlab/
+- A working installation of Matlab or Octave
+- Using a geodesic distance metric (for measuring distances on the surface), a working mex compiler environment may be required. An alternative metric (that gives similar results but does not require mex) is the dijkstra metric.
+- externals have only been tested on Matlab:
+
+  * GIFTI surfaces require the GIFTI matlab toolbox: http://www.artefact.tk/software/matlab/gifti
+  * BrainVoyager surfaces require Neuroelf: neuroelf.net
+  * AFNI NIML I/O requires the AFNI matlab toolbox: http://afni.nimh.nih.gov/afni/matlab/ [work in progress to make this toolbox Octave-compatible]
 
 Developers
 ----------
@@ -30,7 +32,7 @@ Developers
 
 Quick start
 -----------
-- add the "surfing", "misc" and "toolbox_fast_marching" directories (and their subdirectories) to the Matlab path.
+- add the "surfing", "misc" and "toolbox_fast_marching" directories (and their subdirectories) to the Matlab / Octave path.
 - run "compile_mex" in the "surfing" root directory.
 - view the surfing_voxelselection.m function, or consider the examples in the "examples" directory.
 
