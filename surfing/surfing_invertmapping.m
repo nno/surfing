@@ -1,4 +1,4 @@
-function [y2x,n]=surfing_invertmapping2(x2y,ymask)
+function [y2x,n]=surfing_invertmapping(x2y,ymask)
 % inverts a (possibly non-injective) mapping from N1 to N1, where N1 is the
 % set of positive integers.
 %
