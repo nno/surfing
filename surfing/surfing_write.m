@@ -108,6 +108,9 @@ elseif ends_with(fn,'.srf')
     else
         % build from scratch
         x=xff('new:srf');
+
+        % allow for more options in BV (such as resampling meshes)
+        x.ExtendedNeighbors = 1;
          
         % transformation for ASR to LPI
         asr2lpi=[0 -1 0;0 0 -1;-1 0 0];
