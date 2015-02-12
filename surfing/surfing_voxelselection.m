@@ -212,7 +212,7 @@ ascenter=false(ncenters,1); %keep track which nodes were used as center
 
 voxcountsum=0; % to keep track of average number of voxels
 
-if isfield(voldef,'mask')
+if isfield(voldef,'mask') && progressstep
     fprintf('Using %d / %d voxels in functional volume mask\n', sum(voldef.mask(:)~=0), numel(voldef.mask));
 end
     
