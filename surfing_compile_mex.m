@@ -1,3 +1,5 @@
+function surfing_compile_mex()
+
 % master function to compile mex functions
 % including those into toolbox_fast_marching
 % NNO June 2013
