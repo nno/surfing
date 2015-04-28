@@ -1,5 +1,6 @@
 #include "mex.h"
 #include <string.h>
+#include <stdio.h>
 
 /*
  * Input:  matrix X (NxP) for N rows and at most P indices per row

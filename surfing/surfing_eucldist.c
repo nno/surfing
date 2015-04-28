@@ -1,5 +1,6 @@
 #include "mex.h"
 #include <math.h>
+#include <stdio.h>
 
 /*
  * Input: matrices XS (3xP) and YS (3xQ)
