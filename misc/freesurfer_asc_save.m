@@ -1,7 +1,7 @@
 function freesurfer_asc_save(fn, v, f)
 % Saves a surface to freesurfer ASCII format
 %
-% FREESURFER_ASC_SAVE(FN,V,F) 
+% FREESURFER_ASC_SAVE(FN,V,F)
 % INPUTS:
 %    FN:  Filename to save surface to
 %    V:   3xP (or Px3) vertex coordinates

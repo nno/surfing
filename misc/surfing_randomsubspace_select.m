@@ -13,7 +13,7 @@ function [nidxs,vidxs]=surfing_randomsubspace_select(c1,c2,voldef,nodeidxs,roisi
 %   LINEDEF    Default is [5 0 1] for 5 points from C1 to C2
 % OUTPUTS:
 %   NIDXS      1xITERCOUNT cell with node indices of selected voxels on surface
-%   VIDXS      1xITERCOUNT cell with linear voxel indices of selected voxels. 
+%   VIDXS      1xITERCOUNT cell with linear voxel indices of selected voxels.
 %              On average ROISIZE voxels indice are in each element
 %
 % NNO Oct 2010
@@ -27,11 +27,11 @@ allcoords=surfing_nodeidxs2coords(c1,c2,nodeidxs,linedef);
 
 % Find the voxel indices corresponding to the coordinates of points above
 % ALLLINVOXIDXS(I,K) contains the linear index for the voxel
-% associated with node I for the K-th step. 
+% associated with node I for the K-th step.
 alllinvoxidxs=surfing_coords2linvoxelidxs(allcoords,voldef);
 
-% For each row seperately, duplicates are replaced by zeros. 
-unqlinvoxidxs=surfing_uniqueidxsperrow(alllinvoxidxs); 
+% For each row seperately, duplicates are replaced by zeros.
+unqlinvoxidxs=surfing_uniqueidxsperrow(alllinvoxidxs);
 clear alllinvoxidxs;
 
 % construct intermediate surface that is the average of the two surfaces
@@ -39,9 +39,9 @@ intermediatecoords=squeeze(surfing_nodeidxs2coords(c1,c2,nodeidxs,[1,0.5,0.5]));
 
 % find linear indices of voxels containing the center nodes. Values of NaN
 % indicate outside the volume, and those are not used as center.
-intermediatelinvoxidxs=surfing_coords2linvoxelidxs(intermediatecoords,voldef); 
+intermediatelinvoxidxs=surfing_coords2linvoxelidxs(intermediatecoords,voldef);
 outsidemsk=isnan(intermediatelinvoxidxs);
-if sum(outsidemsk)>0 && progressstep    
+if sum(outsidemsk)>0 && progressstep
     warning('surfing_voxelselection:note','found %d / %d center nodes outside the volume, these will be ignored.', sum(outsidemsk), ncenters);
 end
 
@@ -73,13 +73,13 @@ for k=1:itercount
 
     % indices of selected voxels, and number of nodes
     [sidxs,scount]=surfing_selectkfirstidxs(roisize,rpvoxidxs);
-    
+
     nsum=nsum+scount;
     vsum=vsum+numel(sidxs);
-    
+
     vidxs{k}=int32(sidxs);
     nidxs{k}=int32(rp(1:scount));
-    
+
     if progressstep
         if k==1 || mod(k,abs(progressstep))==0 || k==itercount; % show progress in beginning, every PROGRESSSTEP nodes, and at the end
             if progressstep<0, clc(); end
@@ -90,4 +90,4 @@ for k=1:itercount
         end
     end
 end
-    
+

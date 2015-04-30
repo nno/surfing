@@ -20,4 +20,4 @@ if isfield(options, name)
     v = eval(['options.' name ';']);
 elseif mendatory
     error(['You have to provide options.' name '.']);
-end 
+end

@@ -146,4 +146,4 @@ I=rmfield(I,'BRICK_FLOAT_FACS');
 [e,E,I2]=WriteBrik(K,I,opt);
 
         
-        
+

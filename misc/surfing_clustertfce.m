@@ -1,11 +1,11 @@
 function xtfce=surfing_clustertfce(node2area,nbrs,x,dt,showprogress)
-% Treshold-free cluster enhancement (TFCE) for volumes and surfaces. 
+% Treshold-free cluster enhancement (TFCE) for volumes and surfaces.
 % Yields a score (e.g. t-value) to each node, that is higher if the node
 %  is either part of a small but strong cluster, or a weak but large cluster
-% 
+%
 % XTFCE=SURFING_CLUSTERTFCE(N2A,NBRS,X,DT)
 % INPUTS:
-%   N2A       Qx1 mapping from node to area for Q nodes 
+%   N2A       Qx1 mapping from node to area for Q nodes
 %             See SURFING_SURFACEAREA
 %   NBRS      QxN mapping from node to indices of neighbours
 %             See SURFING_NBRS
@@ -13,16 +13,16 @@ function xtfce=surfing_clustertfce(node2area,nbrs,x,dt,showprogress)
 %             X has zero mean and normal
 %   DT        Delta of threshold (for approximation of surface integral)
 %             Default is 0.1. A negative value means that only the cluster
-%             sum for threshold at -DT is computed. Multiple values means 
+%             sum for threshold at -DT is computed. Multiple values means
 %             that these values are taken as thresholds
-% OUTPUTS:  
+% OUTPUTS:
 %   XTFCE     Qx1 TFCE values
 %
 % NNO Oct 2010
 %
 % TFCE reference: Stephen M. Smith, Thomas E. Nichols, Threshold-free
-% cluster enhancement: Addressing problems of smoothing, threshold 
-% dependence and localisation in cluster inference, NeuroImage, Volume 44, 
+% cluster enhancement: Addressing problems of smoothing, threshold
+% dependence and localisation in cluster inference, NeuroImage, Volume 44,
 % Issue 1, 1 January 2009, Pages 83-98.
 %
 % See also SURFING_SURFACEAREA, SURFING_SURFACE_NBRS, SURFING_CLUSTERIZE,
@@ -45,8 +45,8 @@ if sum(x<0) && sum(x>0)
     % separately for positive and negative values
     xtfce1=me(node2area,nbrs, x.*(x>0),dt,showprogress);
     xtfce2=me(node2area,nbrs,-x.*(x<0),dt,showprogress);
-    
-    % every node is either positive, negative, or zero; 
+
+    % every node is either positive, negative, or zero;
     % so it is kosher to simply take the difference
     xtfce=xtfce1-xtfce2;
     return
@@ -73,12 +73,12 @@ elseif dt<0
     ts=dt;
 else
     nsteps=xmax/dt;
-    
+
     if nsteps>maxnsteps;
         xmax=dt*maxnsteps;
         warning('TFCE would require more than %d steps; resetting it to %d', maxnsteps,xmax);
     end
-    
+
     ts=dt:dt:xmax;
 end
 
@@ -90,7 +90,7 @@ for t=ts
         nodeidxs=clusters{k};
         v=sum(node2area(nodeidxs))^B * t^E * dt; % TFCE formula
         xtfce(nodeidxs)=xtfce(nodeidxs)+v;
-        
+
     end
     if showprogress
         fprintf('.');

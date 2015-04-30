@@ -38,7 +38,7 @@ if isnan(circledef)
         if skip_node_mask(k)
             node_indices=zeros(1,0);
         else
-            node_indices=n2ns_matrix(k,:);
+            node_indices=[k n2ns_matrix(k,:)];
         end
         n2ns{k}=node_indices(node_indices>0);
     end
@@ -58,6 +58,12 @@ clock_start=clock();
 prev_msg='';
 
 for k=1:nv
+    if skip_node_mask(k)
+        radii(k)=NaN;
+        n2ns{k}=zeros(1,0);
+        continue;
+    end
+
     [idxs,distances]=surfing_circleROI(v,f,k,circledef,dist_metric,n2f);
     n2ns{k}=idxs;
     sizes(k)=numel(idxs);

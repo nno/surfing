@@ -17,16 +17,16 @@ function [b2s,s2b,x2ys]=surfing_reducemapping(x2y,ymask)
 %
 % It holds that for all i: SMALL2BIG(BIG2SMALL(X2Y{i})) == X2Y{i}
 %                 ... and: BIG2SMALL(X2Y{i})            == X2YSMALL{i}
-% 
+%
 % Example: suppose X2Y is a mapping from center nodes to surrounding
 % voxel indices, referring to a matrix BETA where each row corresponds to
-% values associated with a single voxel. Many voxels may not be associated 
+% values associated with a single voxel. Many voxels may not be associated
 % with any voxel, for example if they are outside the brain.
-% Assuming IDX is the index of a center node, then BETA(X2Y{IDX}, :) are 
+% Assuming IDX is the index of a center node, then BETA(X2Y{IDX}, :) are
 % the voxel values of the surrounding nodes.
 %
 % To reduce memory, use [BIG2SMALL,SMALL2BIG]=SURFING_REDUCEMAPPING(X2Y)
-% followed by BETASMALL=BETA(SMALL2BIG,:).  (BETA can be cleared from memory) 
+% followed by BETASMALL=BETA(SMALL2BIG,:).  (BETA can be cleared from memory)
 %
 % The voxel values associated with IDX can now be accessed through
 % BETASMALL(BIG2SMALL(X2Y{IDX}),:)
@@ -34,12 +34,12 @@ function [b2s,s2b,x2ys]=surfing_reducemapping(x2y,ymask)
 % -----------------------------------------------------------------------
 %
 % For AFNI users: as of Mar 2011, the AFNI matlab function BrikLoad supports
-% an argument opt.Voxels, so that for information mapping purposes loading 
+% an argument opt.Voxels, so that for information mapping purposes loading
 % functional data can be restricted to voxels that are in one or more
-% searchlights. In the following example, n2v is the output from 
-% surfing_voxelselection, epibrikfn is the file with functional data, and 
+% searchlights. In the following example, n2v is the output from
+% surfing_voxelselection, epibrikfn is the file with functional data, and
 % fnout is the surface .niml.dset file name to which output is written
-%   
+%
 %   [b2s,unq,n2vs]=surfing_reducemapping(n2v);
 %   opt=struct(); opt.Voxels=unq; opt.Format='vector';
 %   [err,V,I]=BrikLoad(epibrikfn,opt); % load functional data
@@ -77,7 +77,7 @@ for k=1:n
     elseif ~all(isfinite(x2yk)) || ~isequal(round(x2yk),x2yk) || min(x2yk)<1
         error('vector at x2y{%d} does not contain only positive integers',k);
     end
-    
+
     m=max(x2y{k});
     if m>maxy
         maxy=m;
@@ -93,23 +93,23 @@ end
 % if mask is provided, apply it now
 if nargin>=2
     nymask=numel(ymask);
-    
+
     showwarning=true;
     if isnumeric(ymask) % if numeric, convert to boolean; warning off
         ymask=find(ymask);
         showwarning=false;
     end
-    
+
     if islogical(ymask)
         if showwarning && nymask~=maxy
             warning('reducemapping::number of elements in mask for y (%d) does not match maximum of x2y (%d)',nymask,maxy);
         end
         maxn=min(numel(ymask),maxy);
-        
-        msk(1:maxn)=msk(1:maxn) & ymask(1:maxn); % intersect 
+
+        msk(1:maxn)=msk(1:maxn) & ymask(1:maxn); % intersect
     end
 end
-    
+
 s2b=find(msk);
 m=max(s2b);
 b2s=zeros(1,m);
@@ -120,7 +120,7 @@ if nargout>=3
     for k=1:n
         x2ys{k}=b2s(x2y{k});
     end
-    
+
     if isvec
         x2ys=x2ys{1};
     end

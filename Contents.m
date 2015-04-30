@@ -1,4 +1,4 @@
-% "surfing" toolbox for surface-based voxel selection, useful for 
+% "surfing" toolbox for surface-based voxel selection, useful for
 % SURFace-based information mappING" of the cerebral cortex.
 %
 % Authors: Nikolaas N. oosterhof [NNO]   <n.oosterhof@bangor.ac.uk>
@@ -10,15 +10,15 @@
 %
 % If you use this toolbox for a scientific publication, please cite:
 % Oosterhof, N.N., Wiestler, T, Downing, P.E., & Diedrichsen, J. (in press)
-% A comparison of volume-based and surface-based information mapping. 
+% A comparison of volume-based and surface-based information mapping.
 % Neuroimage. DOI:10.1016/j.neuroimage.2010.04.270
 %
 % This toolbox uses the Fast Marching toolbox by Gabriel Peyre (2009),
 % http://www.ceremade.dauphine.fr/~peyre/download/
-% 
+%
 %
 % === TOOLBOX CONTENTS ===
-% 
+%
 % Main function
 %  SURFING_VOXELSELECTION     - Voxel selection using cortical surfaces
 %                               for euclidian and geodesic distances
@@ -37,7 +37,7 @@
 %  SURFING_UNIQUEIDXSPERROW    - Remove duplicate indices in each row
 %  SURFING_WRITE               - Write surfaces or surface data
 %
-% Utilities                   
+% Utilities
 %  SURFING_INVERTMAPPING       - inverts a matrix-stored mapping f:N->P(N)
 %  SURFING_INDS2SUBS           - linear to sub indices
 %  SURFING_SUBS2INDS           - sub to linear indices

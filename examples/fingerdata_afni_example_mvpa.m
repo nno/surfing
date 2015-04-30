@@ -1,6 +1,6 @@
 radius=50;
 radiusunit='vx'; % vx or mm
-hemi='l'; % left hemisphere                    
+hemi='l'; % left hemisphere
 centercount=NaN; % number of searchlight centers; NaN for all
 
 % input directories
@@ -16,8 +16,8 @@ fnout=sprintf('%s/%sh_cfy_%d%s',outdir,hemi,radius,radiusunit);
 R=load(voxselfn);
 
 [b2s,unq,n2vs]=surfing_reducemapping(R.n2v); % find which voxels were ever selected
-opt=struct(); 
-opt.Voxels=unq; 
+opt=struct();
+opt.Voxels=unq;
 opt.Format='vector';
 [err,V,I]=BrikLoad(betafn,opt); % load functional data
 
@@ -26,9 +26,9 @@ nchunks=16;
 nclasses=2;
 
 % classes (index and middle finger press), alternating subbriks
-classes=repmat(1:nclasses,1,nchunks); 
+classes=repmat(1:nclasses,1,nchunks);
 
-tridxs=cell(nchunks,1); 
+tridxs=cell(nchunks,1);
 teidxs=cell(nchunks,1);
 
 for j=1:nchunks
@@ -48,28 +48,28 @@ tic();
 for k=1:n
     centeridx=rp(k);
     n2vk=n2vs{centeridx};
-    
+
     if numel(n2vk)<10
         continue;
     end
-    
+
     Vk=V(n2vk,:); % data in k-th searchlight
-    
+
     pred(:)=0;
     for j=1:nchunks
         pred(teidxs{j})=classify_lda_KclassesQuicker(...
             Vk(:,tridxs{j}),classes(tridxs{j}),Vk(:,teidxs{j}));
     end
-    
+
     acc=sum(pred==classes)/numel(classes); % accuracy
     zacc=(acc-1/nclasses)/binosd; % z score
-        
+
     r(centeridx,:)=[zacc acc];
     msk(centeridx)=true;
-    
-    if mod(k,100)==0, 
+
+    if mod(k,100)==0,
         msg=sprintf('Mean z=%.3f, accuracy=%.3f ',mean(r(msk,:)));
-        surfing_timeremaining(k/n,msg); 
+        surfing_timeremaining(k/n,msg);
     end
 end
 

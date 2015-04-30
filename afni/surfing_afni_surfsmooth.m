@@ -18,7 +18,7 @@ function [cmd,fnout]=surfing_afni_surfsmooth(surfdatapat,specfn,targetfwhm,varar
 % See also: SURFING_STRUCT, SURFING_AFNI_RUNBINARY,
 % SURFING_SUMA_SURFACEFILES
 %
-% NNO Mar 2011  
+% NNO Mar 2011
 
 
 % set defaults
@@ -69,24 +69,24 @@ fnout=cell(0);
 for j=1:n
     fullfn=fns{j};
     [p,nm,ext]=fileparts(fullfn);
-    
+
     if isempty(strfind(nm,[R.hemi 'h']))
         msg=sprintf('Skipping %s: did not find expected hemisphere pattern %sh', fullfn, R.hemi);
         warning(msg);
         cmd=sprintf('%s; echo %s',cmd,msg);
         continue
     end
-    
+
     % fileparts does not work with double extensions
     trgext='.niml.dset';
     trgextstart=strfind([nm ext],trgext);
     if isempty(trgextstart)
         error('Expected file with extension %s in %s, but not found',trgext,fullfn);
     end
- 
+
     Df.input=[nm ext];
     C=surfing_struct(Df,varargin{:});
-    
+
     replwith=regexprep(C.replexp_{2},'%d',blurstr);
     outputfn=regexprep([nm ext],C.replexp_{1},replwith);
 
@@ -96,14 +96,14 @@ for j=1:n
     end
     Df.spec=R.specfile;
     Df.overwrite=true;
-    
+
     C=surfing_struct(Df,varargin); % join all options
     opt=surfing_afni_opts2string(C); % convert to string
-    
+
     cmd=sprintf('%s; echo; echo Blurring %d / %d for %sh: %s using %s',cmd,j,n,R.hemi,C.input,C.spec);
     cmd=sprintf('%s;%s %s',cmd,surfing_afni_runbinary('SurfSmooth'),opt);
     cmd=sprintf('%s; echo Completed %d / %d: %s; echo',cmd,j,n,C.input);
-    
+
     fnout{end+1}=fullfile(p,outputfn);
 end
 

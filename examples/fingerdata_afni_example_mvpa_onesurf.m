@@ -1,9 +1,9 @@
 % This example (as of Nov 2012) illustrates using a a single
-% high-resolution surface. 
+% high-resolution surface.
 % A use case is surfaces from caret or brainvoyager.
-% In this example the single surface is the intermediate surface 
-% from freesurfer (i.e. based on the node-wise average of the pial and 
-% white surfaces), extended 2mm 'inwards' (towards the white matter) and 
+% In this example the single surface is the intermediate surface
+% from freesurfer (i.e. based on the node-wise average of the pial and
+% white surfaces), extended 2mm 'inwards' (towards the white matter) and
 % 3mm 'outwards' (towards the skull). Note that these values are quite
 % arbitrary and are not necessarily optimal (based on whatever criterion).
 %
@@ -36,7 +36,7 @@ offset_outwards=3; % stop 3 mm 'outwards'
 offsets=[offset_inwards offset_outwards];
 
 % input directories
-rootdir='/Users/nick/organized/_datasets/fingerdata-0.3/'; 
+rootdir='/Users/nick/organized/_datasets/fingerdata-0.3/';
 surfdir=[rootdir 'pyref/'];
 
 % high res surfaces that define gray matter
@@ -58,13 +58,13 @@ fnout=sprintf('%s/%sh_ico%d_single-surface_cfy_%d%s',...
 % Note: with Caret and BV there is just one surface, which would be 'v' as
 % defined here; in this example it is pretended there are no white or pial
 % surfaces.
-v=.5 * (v_pi + v_wh); 
+v=.5 * (v_pi + v_wh);
 
 % take the topology from the pial surface (should be identical to white
 % surface)
-f=f_pi; 
+f=f_pi;
 
-% in this example: ensure we're not using the pial and white surfaces 
+% in this example: ensure we're not using the pial and white surfaces
 % 'by accident'
 clear v_pi f_pi v_wh f_wh
 
@@ -86,8 +86,8 @@ n2v=surfing_voxelselection(v', offsets, f', circledef, voldef);
 
 % prepare loading the EPI data
 [b2s,unq,n2vs]=surfing_reducemapping(n2v); % find which voxels were ever selected
-opt=struct(); 
-opt.Voxels=unq; 
+opt=struct();
+opt.Voxels=unq;
 opt.Format='vector';
 [err,V,I]=BrikLoad(betafn,opt); % load functional data
 
@@ -96,9 +96,9 @@ nchunks=16;
 nclasses=2;
 
 % classes (index and middle finger press), alternating subbriks
-classes=repmat(1:nclasses,1,nchunks); 
+classes=repmat(1:nclasses,1,nchunks);
 
-tridxs=cell(nchunks,1); 
+tridxs=cell(nchunks,1);
 teidxs=cell(nchunks,1);
 
 for j=1:nchunks
@@ -118,28 +118,28 @@ tic();
 for k=1:n
     centeridx=rp(k);
     n2vk=n2vs{centeridx};
-    
+
     if numel(n2vk)<10
         continue;
     end
-    
+
     Vk=V(n2vk,:); % data in k-th searchlight
-    
+
     pred(:)=0;
     for j=1:nchunks
         pred(teidxs{j})=classify_lda_KclassesQuicker(...
             Vk(:,tridxs{j}),classes(tridxs{j}),Vk(:,teidxs{j}));
     end
-    
+
     acc=sum(pred==classes)/numel(classes); % accuracy
     zacc=(acc-1/nclasses)/binosd; % z score
-        
+
     r(centeridx,:)=[zacc acc];
     msk(centeridx)=true;
-    
-    if mod(k,100)==0, 
+
+    if mod(k,100)==0,
         msg=sprintf('Mean z=%.3f, accuracy=%.3f ',mean(r(msk,:)));
-        surfing_timeremaining(k/n,msg); 
+        surfing_timeremaining(k/n,msg);
     end
 end
 
@@ -153,16 +153,16 @@ S.labels={'Zacc','acc'};
 afni_niml_writesimple([fnout '.niml.dset'],S);
 
 % Volume output: how often each voxel was in a searchlight
-K=zeros(voldef.dim); 
+K=zeros(voldef.dim);
 
 % run over all node indices
 for k=1:n
-    linidxs=n2v{k};  
+    linidxs=n2v{k};
     K(linidxs)=K(linidxs)+1;
 end
 
 % write brain mask
-% write results 
+% write results
 opt=struct();
 opt.Prefix=[fnout '+orig'];
 opt.OverWrite='y';

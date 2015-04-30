@@ -11,17 +11,17 @@ function [qr_pth, fi, fj, cp]=surfing_node_half_collapse(v,f,vq,vri,pths,v2f,f_c
 %               pths(vq,vri) is non-zero
 %   pths        PxM path indices for each node in v, if each node as a path
 %               of at most M nodes (see surfing_surface_simple_nodes)
-%   v2f         Mapping from vertices to faces (see 
+%   v2f         Mapping from vertices to faces (see
 %               surfing_nodeidxs2faceidxs)
-%   f_cross     Qx3 cross product of two vertices of each face, i.e. 
+%   f_cross     Qx3 cross product of two vertices of each face, i.e.
 %               if f(k,:)==[a,b,c] then it is the cross product of
 %               vertices a-b and a-c.
 % Returns:
 %   qr_pth      Indices around node vq and pths(vq,vri)
-%   fi          1x2 face indices to be removed 
+%   fi          1x2 face indices to be removed
 %   fj          1xR face indices to be kept
 %   cp          Rx1 Surface ratios (original versus new) of faces in fj
-%   
+%
 % Notes:
 %   - this function returns empty output if:
 %     * node vq is not a simple node
@@ -50,7 +50,7 @@ function [qr_pth, fi, fj, cp]=surfing_node_half_collapse(v,f,vq,vri,pths,v2f,f_c
 %    >> f=[1 1 1 1 1 1; 2 3 4 5 6 7; 3 4 5 6 7 2]';
 %
 %    and the other properties can be computed by
-%    
+%
 %    >> pths=surfing_surface_simple_nodes(v,f);
 %    >> v2f=surfing_nodeidxs2faceidxs(f');
 %    >> a=v(f(:,1),:)';
@@ -77,41 +77,41 @@ function [qr_pth, fi, fj, cp]=surfing_node_half_collapse(v,f,vq,vri,pths,v2f,f_c
 %    >> vr=6
 %    >> vri=find(pths(vq,:)==vr)
 %    >> [qr_pth, fi, fj, cp]=surfing_node_half_collapse(v,f,vq,vri,pths,v2f,f_cross)
-% 
+%
 %    qr_pth =
-% 
+%
 %      2     3     4     5     6     7     1     6
-% 
-% 
+%
+%
 %    fi =
-% 
+%
 %      4     5
-% 
-% 
+%
+%
 %    fj =
-% 
+%
 %      1     2     3     6
-% 
-% 
+%
+%
 %    cp =
-% 
+%
 %      2
 %      2
 %      1
 %      1
-%    
+%
 %     Thus qr_pth contains the node indices around node 1 and node 6 (all
 %     nodes in this case), if contains the indices of faces containing node
 %     1 and node 4 (faces IV and V), fj contains the indices of faces
-%     that contain node 1 but node node 4 (faces I, II, III and VI), and cp 
-%     is ratio between surfaces of the kept faces if the node collapse 
+%     that contain node 1 but node node 4 (faces I, II, III and VI), and cp
+%     is ratio between surfaces of the kept faces if the node collapse
 %     would be performed (faces I and II double in size, faces III and VI
 %     maintain their size)
 %
 %
 % See also: surfing_surface_simple_nodes, surfing_nodeidxs2faceidxs,
 %           surfing_subsample_surface
-% 
+%
 % NNO May 2014
 
 
@@ -124,15 +124,15 @@ cp=[];
 while true
     pth=pths(vq,:);
     pth=pth(pth>0);
-    
+
     n=numel(pth);
 
     if n==0 || vri>n
         break;
     end
-    
+
     vr=pth(vri);
-           
+
     fq=v2f(vq,:);
     fr=v2f(vr,:);
     fq=fq(fq>0);
@@ -160,18 +160,18 @@ while true
     b=v(f_q_new(:,2),:)';
     c=v(f_q_new(:,3),:)';
     cross_new=cross(a-b,a-c)';
-    
+
     inner=sum(cross_new.*cross_orig,2);
     if ~all(inner>0)
         break;
     end
     cp=sqrt(sum(cross_new.^2,2)./sum(cross_orig.^2,2));
-    
+
     qr_pth=[pth pths(vr,:) vq vr];
     qr_pth=qr_pth(qr_pth>0);
-    
+
     fi=fq(m_q);
     fj=fq(~m_q);
     break;
 end
-    
+

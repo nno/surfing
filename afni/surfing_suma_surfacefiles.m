@@ -1,10 +1,10 @@
 function R=surfing_suma_surfacefiles(specfn,trgdir,cpmethod)
 % Finds AFNI SUMA surface files, and optionally copies them to another
-% directory. 
+% directory.
 %
 % [R]=SUMA_SURFACEFILES(SPECFN[,TRGDIR,CPMETHOD])
 % INPUTS:
-%   SPECFN:     SUMA .spec file; or if a directory is given, then all .spec 
+%   SPECFN:     SUMA .spec file; or if a directory is given, then all .spec
 %               files in that directory are processed.
 %   TRGDIR:     Directory where files are copied to; use [] to not copy the
 %               files
@@ -13,13 +13,13 @@ function R=surfing_suma_surfacefiles(specfn,trgdir,cpmethod)
 %   R           Struct with fields .surfs, .specfile, .shell, .anat1,
 %               .anat2, .allfiles, .dir, and .(S) where S is any name of a
 %               surface
-%               
-%               
-% If TRGDIR is specified, then function copies all ASCII Freesurfer files 
-% defined in the .spec file. If there is a .sh file that calls suma, then 
+%
+%
+% If TRGDIR is specified, then function copies all ASCII Freesurfer files
+% defined in the .spec file. If there is a .sh file that calls suma, then
 % the corresponding SurfVol anatomical files are copied too.
 %
-% Note that this function assumes certain naming conventions for the 
+% Note that this function assumes certain naming conventions for the
 % different files (as specified in the code). It should work for files
 % generated with SURFING_SUMA_ALIGN and SURFING_SUMA_MAKESPEC.
 %
@@ -90,12 +90,12 @@ while true
     end
 
     m=regexp(line,pat,'names');
-    if ~isempty(m) 
+    if ~isempty(m)
         for j=1:numel(keys)
             if isnan(m.key)
                 break;
             end
-            if strcmpi(keys{j},m.key) 
+            if strcmpi(keys{j},m.key)
                 for k=1:numel(ignorekeys)
                     if findstr(ignorekeys{k},m.val)
                         m.key=NaN;
@@ -104,15 +104,15 @@ while true
                 if isnan(m.key) % matlab does not jumping out of multiple loops
                     break;
                 end
-                    
-                
+
+
                 surffiles{end+1}=m.val;
                 mhemi=regexp(m.val,'.*([lr]h).*\.asc','tokens');
                 if numel(mhemi)==1
                     hemi=mhemi{1}{1};
                     allhemis{end+1}=hemi(1);
                 end
-                
+
                 mico=regexp(m.val,'\D*ico\D*(\d+)\D*','tokens');
                 if numel(mico)==1
                     ico=mico{1}{1};
@@ -120,7 +120,7 @@ while true
                 end
                 m.key=NaN; % break out
             end
-        end 
+        end
     end
 
 end
@@ -140,7 +140,7 @@ for k=1:numel(surffiles)
             break;
         end
     end
-            
+
 end
 
 R.surfs=surffiles;
@@ -155,26 +155,26 @@ if exist('hemi','var') && exist('ico','var')
     for j=1:numel(pats)
         d=dir(pats{j});
         n=n+numel(d);
-        
+
         if numel(d)==1
             shellfn=[p '/' d(1).name];
             break;
         end
     end
-    
+
     if n==1
         fprintf('Found unique shell script: %s\n', shellfn);
         surffiles{end+1}=d(1).name;
         R.shell=surffiles{end};
         pat='.*suma.*\s+-sv\s+(\S+).*';
-        
+
         fid=fopen(shellfn);
         while true
             line=fgetl(fid);
             if isnumeric(line)
                 break;
             end
-            
+
             manat=regexp(line,pat,'tokens');
             if ~isempty(manat)
                 manat=manat{1}{1};
@@ -187,7 +187,7 @@ if exist('hemi','var') && exist('ico','var')
             end
         end
         fclose(fid);
-        
+
         if ~isfield(R,'anat1')
             error('Not found anat');
         end
@@ -200,7 +200,7 @@ R.dir=[p '/'];
 if ~ischar(trgdir)
     return;
 end
-    
+
 surffiles=unique(surffiles);
 n=numel(surffiles);
 cmd='';
@@ -216,12 +216,12 @@ for k=1:n
             cmd=sprintf('%sln -f %s %s || cp -f %s %s;',cmd,src,trg,src,trg);
         case 'cp'
             cmd=sprintf('%scp -f %s %s;',src,trg);
-            
+
     end
 end
 
 unix(cmd);
 
 
-    
+
 

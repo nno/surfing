@@ -1,13 +1,13 @@
 function [p,n,v,e,e2]=afni_fileparts(fn)
 % Returns the file parts of an AFNI volume file
 %
-% [PATH,NAME,VIEW,EXT,EXT2]=AFNI_FILEPARTS(FN) 
+% [PATH,NAME,VIEW,EXT,EXT2]=AFNI_FILEPARTS(FN)
 %
 % INPUT:
-%   FN      AFNI file name, optionally with path, of the form 
+%   FN      AFNI file name, optionally with path, of the form
 %           PATH '/' NAME VIEW [EXT], with VIEW in '+tlrc','+acpc','+orig'.
 %           EXT can be .HEAD or .BRIK
-% OUTPUTS:  
+% OUTPUTS:
 %   PATH,NAME,VIEW,EXT: As described above
 %   EXT2              : 'other extension' of EXT; EXT2==.BRIK if EXT==.HEAD
 %                       and vice verse

@@ -14,7 +14,7 @@ function [nbrs,dst]=surfing_surface_nbrs(f,v,sort_)
 %  NBRS   NxP neighbour matrix, if each node has at most D neighbours
 %         If node K has Q neighbors, then the K-th row contains the
 %         Q indices with the neighbors of node K followed by (P-Q) zeros.
-%  DST    NxP distance matrix containing the euclidian distances to each 
+%  DST    NxP distance matrix containing the euclidian distances to each
 %         neighboring node, padded with zeros as in NBRS.
 %
 %
@@ -53,8 +53,14 @@ if return_distances
     end
     % allocate space for distances
     dst=zeros(size(nbrs));
+
+    % skip nodes with non-finite values
+    skip_node_mask=any(~isfinite(v),2);
+
+    % set coordinates to NaN
+    v(skip_node_mask,:)=NaN;
 end
-    
+
 for j=1:nv
     % remove self and empty values
     msk=unqnbrs(j,:) ~= 0 & unqnbrs(j,:) ~= j;
@@ -63,39 +69,44 @@ end
 
 if return_distances
     n_max=size(nbrs,2);
-   
+
     for k=1:n_max
         % consider nodes with exactly k neighbors
         nbr=nbrs(:,k);
         m=nbr>0;
-        
+
         % compute euclidian distance
         delta=v(m,:)-v(nbr(m),:);
         dst(m,k)=sum(delta.^2,2).^.5;
     end
-    
+
+    % remove nodes with NaN
+    remove_nodes_mask=isnan(dst);
+    nbrs(remove_nodes_mask)=0;
+
+
     if sort_
         % count number of neighbors for each node
         count=sum(nbrs>0,2);
-        
+
         % space for sorted distances
         sorted_dst=zeros(size(dst));
         sorted_nbrs=zeros(size(nbrs));
-        
+
         for k=1:n_max
             % consider nodes with exactly k neighbors
             m=find(count==k);
             if isempty(m)
                 continue;
             end
-            
+
             % get distances and neighbors
             d=dst(m,1:k);
             nbr=nbrs(m,1:k);
-            
+
             % sort distances row-wise
             [unused,i]=sort(d',1);
-            
+
             % because the sorted indices are set per row they
             % cannot be indexed directly. Rather have a double for loop
             % to find index p in column j
@@ -108,14 +119,14 @@ if return_distances
                 end
             end
         end
-        
+
         nbrs=sorted_nbrs;
         dst=sorted_dst;
     end
-            
-        
+
+
 end
-        
+
 
 
 

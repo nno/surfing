@@ -5,17 +5,17 @@ function [d,n,p,oldd]=surfing_dir(pat)
 % INPUT:
 %  PAT     File name pattern: either a directory name without wildcard
 %          characters, or such a directory name followed by a file name
-%          thay may contain wildcard characters ('?' for any single 
+%          thay may contain wildcard characters ('?' for any single
 %          character, and/or '*' for zero or more of any of characters).
-%          PAT may also be a cell with patterns, in which case all files 
-%          matching any pattern is returned, possibly multiple times if 
+%          PAT may also be a cell with patterns, in which case all files
+%          matching any pattern is returned, possibly multiple times if
 %          the different patterns are not mutually exclusive
 % OUTPUTS:
-%  D       Nx1 struct with strings of filenames with path, if N files match 
+%  D       Nx1 struct with strings of filenames with path, if N files match
 %          the pattern PAT
 %  N       number of files found
 %  P       path in which the files were found
-%  OLDD    The output that the built-in function DIR would give you, only 
+%  OLDD    The output that the built-in function DIR would give you, only
 %          containing files matching the pattern PAT
 %
 % NNO Sep 2010
@@ -42,10 +42,10 @@ if isdir(pat)
     pat=fullfile(pat,'*');
 end
 
-% replace '?' by '*' so that builtin DIR understands 
+% replace '?' by '*' so that builtin DIR understands
 pstar=regexprep(pat,'?','*');
 
-% because multiple consecutive occurences of '*' makes DIR very slow, 
+% because multiple consecutive occurences of '*' makes DIR very slow,
 % replace those by a single '*'.
 while strfind(pstar,'**')
     pstar=strrep(pstar,'**','*');

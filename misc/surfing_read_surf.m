@@ -5,7 +5,7 @@ function [v,f]=surfing_read_surf(fn)
 %
 % Input:
 %   fn       filename of FreeSurfer ascii ('*.asc'), BrainVoyager ('.srf')
-%            or FreeSurfer binary ('*'). 
+%            or FreeSurfer binary ('*').
 %
 % Outputs:
 %   v        Px3 coordinates for P nodes
@@ -33,7 +33,7 @@ elseif endswith('.srf',fn)
     if isempty(w)
         error('Neuroelf is required: see neuroelf.net');
     end
-    
+
     s=xff(fn);
     v=s.VertexCoordinate(:,[3 2 1]); % swap handed-ness
     f=s.TriangleVertex;
@@ -43,7 +43,7 @@ elseif endswith('.gii',fn)
         error(['GIFTI required: see '...
                 'http://www.artefact.tk/software/matlab/gifti/']);
     end
-    
+
     g=gifti(fn);
     v=double(g.vertices);
     f=double(g.faces);

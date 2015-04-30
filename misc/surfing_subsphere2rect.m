@@ -7,7 +7,7 @@ function [idxs,nx,ny]=surfing_subsphere2rect(v,io,ix,iy,nx,ny,progressstep)
 %   IO,IX,IY    Node indices (base 1) for origin, x and y edges of
 %               rectangle. If ABCD is a rectangle with sides AB, BC, CD,
 %               and AC, then A=V(IO,:), B=V(IX,:), and D=V(IY,:).
-%   NX,NY       Number of points on the sides of the rectangle 
+%   NX,NY       Number of points on the sides of the rectangle
 %               If NY is omitted, is is computed to give a similar step
 %               size in the Y direction as the X direction
 % OUTPUTS:
@@ -17,7 +17,7 @@ function [idxs,nx,ny]=surfing_subsphere2rect(v,io,ix,iy,nx,ny,progressstep)
 %
 % Method: Construct a rectangle based on IO,IX,IY, subdivide the sides,
 % and compute the nearest points between those on the rectangle and the
-% surface. Subdivision is currently based on distance, not angle. 
+% surface. Subdivision is currently based on distance, not angle.
 % Currently it is assumed that the input surface is an AFNI ascii spherical
 % surface; the program may crash if those assumptions are not met.
 %
@@ -81,7 +81,7 @@ nsel=find(d<=maxd);        % indices of nodes that are near
 sv=v(nsel,:)';             % coordinates of nodes that are near
 
 % allocate space for output
-idxs=zeros(nx,ny);  
+idxs=zeros(nx,ny);
 tic();
 counter=0;
 for xi=1:nx
@@ -89,7 +89,7 @@ for xi=1:nx
         p=relpos(o,x,y,(xi-1)*xstep,(yi-1)*ystep); % position in triangle
         sidx=nearest(sv,p'); % nearest node on surface
         idxs(xi,yi)=nsel(sidx);
-        
+
         counter=counter+1;
         if counter==0 || mod(counter,progressstep)==0 || counter==nx*ny
             surfing_timeremaining(counter/nx/ny);
@@ -101,7 +101,7 @@ function [idx,d]=nearest(xs,x) % finds the index in xs of the node nearest from 
 
 d=surfing_eucldist(xs,x);
 [dummy,idx]=min(d);
-    
+
 
 function y=relpos(o,x,y,a,b) % coordinates (a,b), relative to origin x and axes x and y
 % TODO: fancy stuff with angles

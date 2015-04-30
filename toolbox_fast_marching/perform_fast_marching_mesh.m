@@ -13,7 +13,7 @@ function [D,S,Q] = perform_fast_marching_mesh(vertex, faces, start_points, optio
 %       value), 1 for far (ie point not already computed). Distance function
 %       for far points is Inf.
 %   Q is the index of the closest point. Q is set to 0 for far points.
-%       Q provide a Voronoi decomposition of the domain. 
+%       Q provide a Voronoi decomposition of the domain.
 %
 %   Optional:
 %   - You can provide non-uniform speed in options.W.

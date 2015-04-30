@@ -5,9 +5,9 @@ function fingerdata_afni_all_examples(just_one_surf,low_res_output)
 %
 % This new example (as of May 2014) illustrates four ways to do searchlight
 % analysis:
-% - either using a low resolution surface to define the searchlight 
-%   centers combined with a high resolution surface that delineate the 
-%   grey matter; or using a high-resolution surface throughout. 
+% - either using a low resolution surface to define the searchlight
+%   centers combined with a high resolution surface that delineate the
+%   grey matter; or using a high-resolution surface throughout.
 %   The advantage of a low-res surface is reduced execution time.
 %   The disadantage is a loss in spatial resolution in the output map.
 % - using a single surface (as provided by Caret or BrainVoyager) or
@@ -21,20 +21,20 @@ function fingerdata_afni_all_examples(just_one_surf,low_res_output)
 %
 % The typical use case scenarios are:
 % 1) BV/Caret users (just_one_surf=true)
-%    (a) (low_res_output=false) use of single surface with same output 
+%    (a) (low_res_output=false) use of single surface with same output
 %        resolution as the input resolution
-%    (b) (low_res_output=true) use of single surface with lower output 
-%        resolution as the input resolution. The output surface 
-%        is downsampled using surfing_subsample_surface applied to the 
-%        input surface 
+%    (b) (low_res_output=true) use of single surface with lower output
+%        resolution as the input resolution. The output surface
+%        is downsampled using surfing_subsample_surface applied to the
+%        input surface
 % 2) FreeSurfer users (just_one_surf=false)
-%    (a) use of pial and white surface with same output 
+%    (a) use of pial and white surface with same output
 %        resolution as the input resolution
-%    (b) (low_res_output=true) use of single surface with lower output 
-%        resolution as the input resolution. The output surface 
+%    (b) (low_res_output=true) use of single surface with lower output
+%        resolution as the input resolution. The output surface
 %        is generated using MapIcosahedron (as is the input surface), with
-%        the input surface having more linear divisions (and thus more 
-%        nodes) than the output surface 
+%        the input surface having more linear divisions (and thus more
+%        nodes) than the output surface
 %
 % Example:
 %  >> fingerdata_afni_all_examples();
@@ -80,7 +80,7 @@ if just_one_surf
 end
 
 % input directories
-rootdir='/Users/nick/organized/_datasets/fingerdata-0.3/'; 
+rootdir='/Users/nick/organized/_datasets/fingerdata-0.3/';
 surfdir=[rootdir 'pyref/'];
 
 % high res surfaces that define gray matter
@@ -108,8 +108,8 @@ if just_one_surf || low_res_output
     f_im=f_wh;
 end
 
-    
-if low_res_output    
+
+if low_res_output
     if just_one_surf
         out_infix=sprintf('%diter_%.1f-%.1f',downsample_niter,offsets);
         fprintf('Downsampling surface with %d iterations\n', ...
@@ -118,15 +118,15 @@ if low_res_output
                                             downsample_niter);
     else
         out_infix=sprintf('icolow%d',ld_low);
-        
-        % low res surface (from MapIcosahedron) that provides the 
+
+        % low res surface (from MapIcosahedron) that provides the
         % the searchlight centers [FS case]
         source_fn=sprintf('%s/ico%d_%sh.intermediate_al.asc', ...
                     surfdir, ld_low, hemi);
         [v_src, f_src]=surfing_read(source_fn);
         fprintf('Source surface read from %s\n', source_fn);
     end
-    
+
     % compute mapping from low to high res surface
     low2high=surfing_maplow2hires(v_src', v_im');
 else
@@ -135,10 +135,10 @@ else
     else
         out_infix='';
     end
-    
+
     low2high=[]; % identity mapping
 end
-   
+
 % sanity check: if just one surface remove pial and white from memory
 % (this is the BV/Caret case)
 if just_one_surf
@@ -158,29 +158,29 @@ if just_one_surf && low_res_output
     inflated_fn=sprintf('%s/ico%d_%sh.inflated_alCOMmedial.asc', ...
                                         surfdir, ld_high, hemi);
 
-    
+
     [v_inf,unused]=surfing_read(inflated_fn);
-    
+
     % apply mapping from low to high res to this surface
     v_src_inf=v_inf(low2high,:);
-    
+
     % copy topology
     f_src_inf=f_src;
-    
-    
+
+
     source_inflated_fn=sprintf('%s/subs_ico%d_%dit_%sh.inflated_alCOMmedial.asc',...
                 out_dir, ld_high, downsample_niter, hemi);
     surfing_write(source_inflated_fn, v_src_inf, f_src_inf);
     fprintf('Inflated surface written to %s\n', source_inflated_fn);
 
-            
+
 end
-                                        
+
 
 fn_out_data=sprintf('%s/%sh_ico%d_%s_%d%s',...
             out_dir,hemi,ld_high,out_infix,radius,radiusunit);
 
-    
+
 
 % define searchlight mapping
 switch radiusunit
@@ -211,8 +211,8 @@ end
 fprintf('Loading functional data\n');
 % prepare loading the EPI data
 [b2s,unq,n2vs]=surfing_reducemapping(n2v); % find which voxels were ever selected
-opt=struct(); 
-opt.Voxels=unq; 
+opt=struct();
+opt.Voxels=unq;
 opt.Format='vector';
 [err,V,I]=BrikLoad(beta_fn,opt); % load functional data
 
@@ -221,9 +221,9 @@ nchunks=16;
 nclasses=2;
 
 % classes (index and middle finger press), alternating subbriks
-classes=repmat(1:nclasses,1,nchunks); 
+classes=repmat(1:nclasses,1,nchunks);
 
-tridxs=cell(nchunks,1); 
+tridxs=cell(nchunks,1);
 teidxs=cell(nchunks,1);
 
 for j=1:nchunks
@@ -249,26 +249,26 @@ fprintf('Starting classification analysis\n');
 for k=1:ncenters
     centeridx=rp(k);
     n2vk=n2vs{centeridx};
-    
+
     if numel(n2vk)<10
         continue;
     end
-    
+
     Vk=V(n2vk,:); % data in k-th searchlight
-    
+
     pred(:)=0;
     for j=1:nchunks
         pred(teidxs{j})=classify_lda_KclassesQuicker(...
             Vk(:,tridxs{j}),classes(tridxs{j}),Vk(:,teidxs{j}));
     end
-    
+
     acc=sum(pred==classes)/numel(classes); % accuracy
     zacc=(acc-1/nclasses)/binosd; % z score
-        
+
     r(centeridx,:)=[zacc acc];
     msk(centeridx)=true;
-    
-    if mod(k,progress_step)==0, 
+
+    if mod(k,progress_step)==0,
         msg=sprintf('Mean z=%.3f, accuracy=%.3f ',mean(r(msk,:)));
         prev_msg=surfing_timeremaining(clock_start,k/ncenters,msg,prev_msg);
     end

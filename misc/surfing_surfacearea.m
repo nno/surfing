@@ -30,7 +30,7 @@ r=c(f(:,3),:);
 pq=p-q;
 pr=p-r;
 
-% face area: .5*sqrt(   |a|^2*|b|^2 - (a.b)^2    ) 
+% face area: .5*sqrt(   |a|^2*|b|^2 - (a.b)^2    )
 % where a=pq, b=pr and (a.b) means dot product
 face2area=.5*sqrt(sum(pq.^2,2).*sum(pr.^2,2)-sum(pq.*pr,2).^2);
 
@@ -43,7 +43,7 @@ maxn2f=size(n2f,2);
 node2area=zeros(nv,1);
 for k=1:maxn2f
     n2fk=n2f(:,k); % not all nodes may be in the same number of faces
-    msk=n2fk>0 & ~isnan(n2fk); 
+    msk=n2fk>0 & ~isnan(n2fk);
     node2area(msk)=node2area(msk)+face2area(n2fk(msk))/3; % even split between three nodes in the triangle
 end
-    
+

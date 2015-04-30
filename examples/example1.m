@@ -114,4 +114,4 @@ switch betatype
         [e,E,I2]=WriteBrik(K,I,opt);
 end
         
-        
+

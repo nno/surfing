@@ -56,17 +56,17 @@ end
 for j=1:n
     fullfn=fns{j};
     [p,nm,vw]=afni_fileparts(fullfn);
-    
+
     C=struct();
     C.out_niml=[p '/' R.hemi 'h_' nm '.niml.dset'];
     C.sv=R.anat1;
     C.grid_parent=[p '/' nm vw];
     C.spec=R.specfile;
-    
+
     C=surfing_struct(Df,C,varargin); % join all options
     C=makelast(C,{'spec','sv','grid_parent'}); % some fields as last args
     opt=surfing_afni_opts2string(C); % convert to string
-    
+
     cmd=sprintf('%s;rm %s; echo; echo "Mapping %d / %d for %sh using %s: %s -> %s"',cmd,C.out_niml,j,n,R.hemi,C.spec,C.grid_parent,C.out_niml);
     cmd=sprintf('%s;%s %s',cmd,surfing_afni_runbinary('3dVol2Surf'),opt);
     cmd=sprintf('%s; echo "Completed %d / %d: %s"; echo',cmd,j,n,C.sv);

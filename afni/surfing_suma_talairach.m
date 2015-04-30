@@ -48,7 +48,7 @@ elseif ~iscell(sumadirs)
 end
 
 curdir=pwd();
-ifxs={'smoothwm','intermediate','pial','semiinflated','tqinflated','inflated'}; 
+ifxs={'smoothwm','intermediate','pial','semiinflated','tqinflated','inflated'};
 hemis='lr';
 ni=numel(ifxs);      % number of surfaces
 ns=numel(sumadirs);  %           subjects
@@ -64,23 +64,23 @@ allanatfiles=cell(ns,1);
 % convert data for subjects one by one
 for k=1:ns
     sumadir=sumadirs{k};
-    
+
     if ~isdir(sumadir), error('%s is not a directory',sumadir); end
-    
+
     % go up two levels from SUMA dir, then find subject directory
     cd([sumadir '..' filesep() '..']);
     subjdir=pwd();
     cd(curdir);
-    
+
     % get subject id from current directory
     slashpos=find(subjdir==filesep(),1,'last');
     if isempty(slashpos), error('Cannot find subject id'); end
     subjid=subjdir((slashpos+1):end);
-    
+
     % ensure FreeSurfer knows where we are
     cmd=sprintf('%s;cd %s%s..;export SUBJECTS_DIR=`pwd`;cd %s;echo "Now in "`pwd`',...
         cmd,subjdir,filesep(),sumadir);
-    
+
     % convert anatomical
     cmd=sprintf('%s;mri_convert -at ../../mri/transforms/talairach.xfm ../../mri/T1.mgz ./T1_tlrc.nii||exit 1',cmd);
     anatfn=sprintf('%s_SurfVol%s',subjid,C.surftlrcpostfix); % add '_tlrc' to filename
@@ -88,22 +88,22 @@ for k=1:ns
         cmd,anatfn,anatfn,anatfn);
     cmd=sprintf('%s;echo "Converted anatomical %s+tlrc (%s)"',cmd,anatfn,subjid);
     allanatfiles{k}=[sumadir anatfn '+tlrc'];
-    
+
     % convert surfaces
     for h=1:nh % both hemispheres
         hemi=hemis(h);
         for j=1:ni % all infixes
             ifx=ifxs{j};
             pat=sprintf([sumadir filesep() icostr '%sh.%s.asc'],hemi,ifx);
-            d=surfing_dir(pat); 
+            d=surfing_dir(pat);
             if numel(d)~=1 % only continue if exactly one file found
                 warning('No unique match for %s, skipping',pat);
                 continue;
             end
-            
+
             [dummy,src]=fileparts(d{1}); % get rid of extension
             trg=[regexprep(src,ifx,[ifx C.surftlrcpostfix])]; % add '_tlrc' to target filename
-            
+
             % use Freesurfer mris_convert with Talairach transform
             cmd=sprintf('%s; mris_convert -t %s %s.asc %s.asc || exit 1; echo "Converted %s -> %s (%s)"',...
                 cmd,subjid,src,trg,src,trg,subjid);
@@ -127,7 +127,7 @@ hb={'HEAD','BRIK'}; % head and brik extensions
 for k=1:ns
     src=allanatfiles{k};
     [dummy,n,e]=afni_fileparts(src);
-    trg=[n e];    
+    trg=[n e];
 
     for j=1:numel(hb)
         % ensure volumes from different participants on same grid, by resampling to first volume
@@ -165,34 +165,34 @@ for h=1:nh % for two hemispheres
         elseif size(v,1)~=nverts
             error('Non-matching number of vertices - this should not happen');
         end
-        
+
         dj=zeros(nverts,ns); % distances from mean for all subjects
         for k=1:ns
             vj=squeeze(v(:,:,k)); % coordinates of j-th participant
             d3=mv-vj; % difference in x,y,z for all nodes
             dj(:,k)=surfing_eucldist(d3',[0;0;0]); % distance from mean
-            
+
             sa(:,j)=sa(:,j)+(1/ns)*surfing_surfacearea(vj,f,n2f);
         end
         sv(:,j)=std(dj,[],2); % compute standard deviation for this surface
-        
+
         [dummy,fn,ext]=fileparts(allsurffiles{1,j,h});
         trgfn=[trgdir filesep() fn ext];
         freesurfer_asc_save(trgfn,mv,f); % write average surface
     end
-    
+
     S=struct();
     S.labels=ifxs;
     prefix=sprintf('%s%s%s%sh_',trgdir,filesep(),icostr,hemis(h));
-    
+
     % write standard deviation for all surfaces to a single file
     S.data=sv;
     afni_niml_writesimple(S,[prefix 'surface_avg_distance_std.niml.dset']);
-    
+
     % write average surface area for all surfaces to a single file
     S.data=sa;
     afni_niml_writesimple(S,[prefix 'surface_avg_surface_area.niml.dset']);
-    
+
 end
-    
-surfing_suma_makespec('aligndir',trgdir,'surfvolalfn',[C.anatavg '+tlrc'],'icold',C.icold);    
+
+surfing_suma_makespec('aligndir',trgdir,'surfvolalfn',[C.anatavg '+tlrc'],'icold',C.icold);

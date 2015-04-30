@@ -11,7 +11,7 @@ end
 for j=1:numel(subdirs);
     d=[surfingdir '/' subdirs{j}];
     [fns,n]=surfing_dir([d '/*.m']);
-    
+
     for k=1:n
         [p,nm,ex]=fileparts(fns{k});
         r=help(nm);
@@ -20,7 +20,7 @@ for j=1:numel(subdirs);
         fid=fopen(fnout,'w');
         fprintf(fid,'%s',r);
         fclose(fid);
-        
+
     end
     d
 end

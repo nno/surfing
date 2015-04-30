@@ -5,11 +5,11 @@ function b=surfing_mask_borders(msk,nbrs)
 
 
 [nv,nn]=size(nbrs);
-if iscell(msk) 
+if iscell(msk)
     msk=unique([msk{:}]);
 end
 
-if isnumeric(msk) 
+if isnumeric(msk)
     if isequal(round(msk),msk) && min(msk)>=1 && max(msk) <= nv
         mskidxs=msk;
         msk=false(nv,1);
@@ -22,8 +22,8 @@ elseif ~islogical(msk)
 end
 
 if numel(msk) ~= nv, error('Size mismatch between mask and neighbours'); end
-    
-nbrs=[ones(1,nn); 1+nbrs]; % add dummy 
+
+nbrs=[ones(1,nn); 1+nbrs]; % add dummy
 nbrsh=sum(nbrs>1,2); % number of neighbours for each value
 
 mskn=[false; msk(:)]+0; % convert to numeric; incorporate dummy
@@ -38,7 +38,7 @@ b=mskh(2:end)<nbrsh(2:end) & msk;
 
 
 
-        
-    
-    
-    
+
+
+
+

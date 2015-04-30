@@ -1,12 +1,12 @@
 function [cmd,C]=surfing_suma_align(varargin)
 % Alignment of Freesurfer surfaces to an anatomical volume using AFNI
-% 
+%
 % Necessary parameters:
 %   action:     'tosuma', 'mapico', 'moresurfs', 'alignoriganat',
 %              'applyoriganat', 'all', or ''
 %   origvolfn:  path and filename of original anatomical volume that must be
 %              aligned to the functional data.
-%   fssurfdir:  Freesurfer "surf" dir 
+%   fssurfdir:  Freesurfer "surf" dir
 %   subjid:     subject id
 %   aligndir:   directory to do alignment in (and put results in)
 % These parameters should be given as in SURFING_STRUCT.
@@ -24,7 +24,7 @@ function [cmd,C]=surfing_suma_align(varargin)
 %
 % See also SURFING_STRUCT, SURFING_SUMA_MAKESPEC.
 %
-% NNO Mar 2011 
+% NNO Mar 2011
 
 me=str2func(mfilename());
 
@@ -154,12 +154,12 @@ else
             origsurfvols={[C.sumadir C.surfvolfn],C.origvolfn};
             striporigsurfvols=[C.skullstriporigvol C.skullstripsurfvol];
             alignvols=cell(1,2); % names of files to be used for alignment
-            
+
             skullyesopts={'-anat_has_skull yes',''};
             skullnoopts={'-epi_strip None','-anat_has_skull no'};
-            
+
             alignopts='';
-            
+
             for k=1:2
                 [p,n,v,e,e2]=afni_fileparts(origsurfvols{k});
                 if striporigsurfvols(k)
@@ -176,7 +176,7 @@ else
                     alignopts=[alignopts ' ' skullyesopts{k}];
                 end
             end
-                   
+
             % clean up add bit
             cmdadd('rm %s %s %s %s',C.matfileinv,C.matfile,C.matfile3x4,C.matfileinv3x4);
 
@@ -185,16 +185,16 @@ else
             %cmdaddafni('3dAllineate','-overwrite -automask -source_automask -base %s -source %s -1Dmatrix_save %s -cmass -warp shr -cost %s',alignvols{1},alignvols{2},C.matfileinv,C.costfunction);
             cmdaddafni('align_epi_anat.py','-overwrite -dset1 %s -dset2 %s -dset1to2 -giant_move -suffix %s -Allineate_opts "-warp shr -VERB -weight_frac 1.0" %s',...
                 alignvols{2},alignvols{1},C.alignepianatsuffix,alignopts);
-            
+
             [dummy,no]=afni_fileparts(alignvols{2});
             alignmatfn=[no C.alignepianatsuffix '_mat.aff12.1D'];
             cmdaddafni('cat_matvec','-ONELINE %s -I > %s',alignmatfn,C.matfileinv);
-            %cmdaddp('cat_matvec','-ONELINE %s -I > %s',matfileinv,matfile); 
+            %cmdaddp('cat_matvec','-ONELINE %s -I > %s',matfileinv,matfile);
 
         case 'applyoriganat'
             % apply found alignment parameters to volume and surfaces
             cmdaddq('cd %s',C.aligndir);
-            
+
             %fns={C.surfvolfn,C.surfvolfixfn;C.origvolalfn,C.origvolalfixfn};
             fns={C.surfvolfn,C.surfvolalfn};
             if C.overwrite || ~exist(fullfile(C.aligndir,[C.surfvolalfn '.HEAD']),'file')
@@ -205,7 +205,7 @@ else
                     [dummy,nt,et]=afni_fileparts(fns{k,2});
                     trg=[nt et];
 
-                    %cmdaddafni('3dcopy', '-overwrite %s %s',src,trg); 
+                    %cmdaddafni('3dcopy', '-overwrite %s %s',src,trg);
                     % add -I %here
                     cmdaddafni('cat_matvec','-ONELINE %s %s > %s',C.origvol2almatfn,C.matfileinv,C.surfvol2alorigvolfn3x4);
 
@@ -232,7 +232,7 @@ else
                 cmdadd('rm *_e3+orig.????* *_ec+orig.????* _ae.* *_e+orig.????*');
                 cmdaddafni('\@Addedge','%s %s',C.origvolsvgridfn,C.surfvolalfn);
             end
-            
+
             cmdaddafni('cat_matvec','-ONELINE %s %s %s > %s',matlpirai,C.surfvol2alorigvolfn3x4,matlpirai,C.surfvol2alorigvolfn3x4lpirai)
 
             for hemi=C.hemis
@@ -247,13 +247,13 @@ else
                     end
                 end
             end
-            
-            
+
+
         case 'all'
             C.action=allactions;
-            cmd=me(C); 
+            cmd=me(C);
             return
-            
+
         case '',
 
         otherwise

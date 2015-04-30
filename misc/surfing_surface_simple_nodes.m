@@ -9,15 +9,15 @@ function [pths,is_simple]=surfing_surface_simple_nodes(v,f)
 %
 % Outputs:
 %   pths       PxM node indices, if each node is contained in at most M
-%              faces. pths(K,:) contains as the first N elements a list of 
-%              indices that form a path around node K, if such a path 
-%              exists; the remaining entries are zero. 
+%              faces. pths(K,:) contains as the first N elements a list of
+%              indices that form a path around node K, if such a path
+%              exists; the remaining entries are zero.
 %   is_simple  indicates whether a path exists around each node
 %
 % Notes:
 %   - a path around a node K is a list of node indices I_1,...,I_N so that
 %     the edges (I_1, I_2), (I_2, I_3), ... (I_{N-1}, I_N), (I_N, I_1)
-%     are all contained in a face, that each of these faces contains 
+%     are all contained in a face, that each of these faces contains
 %     node K, and that there are no other faces that contain node K.
 %
 % Example:
@@ -39,13 +39,13 @@ function [pths,is_simple]=surfing_surface_simple_nodes(v,f)
 %    >> f=[1 1 1 1 1 1; 2 3 4 5 6 7; 3 4 5 6 7 2]';
 %
 %    In this surface, only node 1 is a simple node as there is a path
-%    around it 2-3-4-5-6-7(-2) that covers all faces (I-VI) that contain 
+%    around it 2-3-4-5-6-7(-2) that covers all faces (I-VI) that contain
 %    node 1 while the path starts and ends with the same node.
 %    All other nodes are not simple because they don't have such a path.
 %
 %    >> [pths,is_simple]=surfing_surface_simple_nodes(v,f)
 %    pths =
-% 
+%
 %      2     3     4     5     6     7
 %      0     0     0     0     0     0
 %      0     0     0     0     0     0
@@ -53,10 +53,10 @@ function [pths,is_simple]=surfing_surface_simple_nodes(v,f)
 %      0     0     0     0     0     0
 %      0     0     0     0     0     0
 %      0     0     0     0     0     0
-% 
-% 
+%
+%
 %    is_simple =
-% 
+%
 %      1
 %      0
 %      0
@@ -108,9 +108,9 @@ for k=1:nv
 
     col=1;
     col_counter(:)=0; % reset counter
-    
+
     has_path=true;
-    
+
     for j=1:n
         pth(j)=fa(col);
 
@@ -120,7 +120,7 @@ for k=1:nv
             has_path=false;
             break;
         end
-        
+
         col_counter(col)=col_counter(col)+1;
     end
 
@@ -128,19 +128,19 @@ for k=1:nv
         pths(k,ns)=pth(ns);
         is_simple(k)=true;
         npths(k)=n;
-    end  
-    
+    end
+
     if mod(k,progress_step)==0 || k==nv
         s=is_simple(1:k);
         msg=sprintf('%.1f%% simple nodes', sum(s)*100/nv);
-        prev_msg=surfing_timeremaining(clock_start,k/nv,msg,prev_msg); 
+        prev_msg=surfing_timeremaining(clock_start,k/nv,msg,prev_msg);
     end
 end
 
 % special case: neighbors of nodes with three nodes around them
 % these nodes are not simple
 % example: surfaces with faces 1-4-2, 1-2-5, 2-4-3, 2-3-5, 3-4-5
-% 
+%
 
 triples_msk=npths==3;
 pth2node=surfing_invertmapping(pths);
@@ -153,17 +153,17 @@ for col=1:3
 
     % get paths of pivot nodes
     p=pths(pivots,:);
-    
+
     % get nodes on the path before and after the pivot
     a=bsxfun(@eq,pths(triples_msk,mod(col,3)+1),p);
     b=bsxfun(@eq,pths(triples_msk,mod(col+1,3)+1),p);
-    
+
     % predecessor and sucessor should not be equal to pivot
     m=any(a,2) & any(b,2);
-    
+
     non_simple(pivots(m))=true;
 end
 
 pths(non_simple,:)=0;
 is_simple(non_simple)=false;
-        
+

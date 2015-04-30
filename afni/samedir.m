@@ -5,10 +5,10 @@ function issame=samedir(a,b)
 % ISSAME=SAMEDIR(DIR1,DIR2)
 % INPUTS:
 %   DIR1,DIR2    Paths to two directories
-% OUTPUT:        
+% OUTPUT:
 %   ISSAME       true iff DIR1 and DIR2 point to the same directory
 %
-% If either DIR1 or DIR2 is not a directory, this function returns false 
+% If either DIR1 or DIR2 is not a directory, this function returns false
 %
 % Method: write a new temporary file in DIR1; if it exists in DIR2 we
 % assume it's the same directory.

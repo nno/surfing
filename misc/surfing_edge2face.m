@@ -8,9 +8,9 @@ function edge2face=surfing_edge2face(v,f)
 %
 % Output:
 %   edge2face      PxP sparse matrix (with P=max(f(:)) the number of nodes)
-%                  so that edge2face(i,j)==k means that the edge from i to 
-%                  j contains face k. Note that edge2face(j,i) contains the 
-%                  other face shared with the edge. 
+%                  so that edge2face(i,j)==k means that the edge from i to
+%                  j contains face k. Note that edge2face(j,i) contains the
+%                  other face shared with the edge.
 %
 % Notes:
 %   - if the surface has no consistent orientation, or an edge is present

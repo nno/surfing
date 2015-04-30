@@ -1,11 +1,11 @@
 function err=surfing_check_surface(v,f,raise_if_error,level)
 % perform basic checks for surface
-% 
+%
 % err=surfing_check_surface(v,f,raise_if_error)
 %
 % Inputs:
 %  v                Px3 node coordinates
-%  f                Qx3 faces containing node indices 
+%  f                Qx3 faces containing node indices
 %  raise_if_error   If true (the default) then an error is raised if
 %                   the surface is not proper. This can occur when
 %                   - v or f are of the wrong shape
@@ -15,7 +15,7 @@ function err=surfing_check_surface(v,f,raise_if_error,level)
 % Returns
 %  err              The error message if a surface is not proper, or empty
 %                   otherwise
-%  
+%
 % NNO Apr 2014
 
 
@@ -28,7 +28,7 @@ err='';
 while true
     [nv,three]=size(v);
     if three~=3
-        err='vertices must be Px3'; 
+        err='vertices must be Px3';
         break;
     end
 
@@ -106,12 +106,12 @@ while true
                     break
                 end
             end
-            assert(~isempty(err), 'this should not happen'); 
+            assert(~isempty(err), 'this should not happen');
         end
     end
-    
+
     break;
-end    
+end
 
 if raise_if_error && ~isempty(err)
     error(err);

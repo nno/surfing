@@ -13,7 +13,7 @@ function theta=surfing_face2angle(v,f)
 %                  nodes in face i.
 %
 % Notes:
-%   - to convert the angles from radians to degrees, multiply theta by 
+%   - to convert the angles from radians to degrees, multiply theta by
 %     (180/pi)
 %
 % NNO Apr 2014
@@ -26,7 +26,7 @@ theta=zeros(nf,1);
 for i=1:3
     j=mod(i,3)+1;
     k=mod(i+1,3)+1;
-    
+
     p=v(f(:,i),:)-v(f(:,j),:);
     q=v(f(:,i),:)-v(f(:,k),:);
 
@@ -39,5 +39,5 @@ function theta=angle(a,b)
 
 theta=acos( sum(a.*b,2)./sqrt (sum(a.^2,2).*sum(b.^2,2)));
 
-    
+
 

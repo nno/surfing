@@ -8,9 +8,9 @@ function y=surfing_afni_conjunction(x,dim)
 % OUTPUT
 %   Y      Q1xQ2x...xQn array, where Qi=1 if i==DIM and Qi=Pi otherwise
 %          A nonzero value in Y means that all values along the
-%          corresponding dimension in X were of the same sign. The value 
+%          corresponding dimension in X were of the same sign. The value
 %          itself is the minimum of the absolute values along that dimension
-% 
+%
 % NNO Mar 2011
 
 sz=size(x,dim);

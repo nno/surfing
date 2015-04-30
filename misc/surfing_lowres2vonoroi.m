@@ -1,17 +1,17 @@
 function [vonl2h,vonh2l,mindist]=surfing_lowres2vonoroi(c1,c2,f2,r)
 % constructs a Vonoroi mapping on a high resolution surface, using a low
-% resolution surface as seed points and geodesic distance measure. 
+% resolution surface as seed points and geodesic distance measure.
 %
-% [L2H,H2L,D]=SURFING_LOWRES2VONOROI(CLOW,CHIGH,FHIGH[,R]) 
+% [L2H,H2L,D]=SURFING_LOWRES2VONOROI(CLOW,CHIGH,FHIGH[,R])
 % INPUTS:
 %   CLOW:   3xNLOW  coordinates for N nodes from low  resolution surface
 %   CHIGH:  3xNHIGH "                          " high "                "
 %   FHIGH   3xP vertex indices for P faces (base1)
 % OPTIONAL INPUT:
 %   R:      Initial radius on high resolution surface; default is R=6.
-%           Because the necessary Euclidian distance for search regions 
-%           cannot be computed beforehand, a certain radius R is chosen 
-%           initially and increased until for all nodes the minimum 
+%           Because the necessary Euclidian distance for search regions
+%           cannot be computed beforehand, a certain radius R is chosen
+%           initially and increased until for all nodes the minimum
 %           distance was found.
 %           A negative value of R will use radius -R, but not increase R,
 %           meaning that certain values in D may be Inf.
@@ -19,8 +19,8 @@ function [vonl2h,vonh2l,mindist]=surfing_lowres2vonoroi(c1,c2,f2,r)
 %   L2H:    NLOWxQ node mapping from low to high resolution surface nodes.
 %           At most Q ndoes in CHIGH are associated with a node in CLOW
 %   H2L:    NHIGHx1 node mapping from high to low resolution surface nodes.
-%   D:      NHIGHx1 geodesic distances from a node in CHIGH and the nearest 
-%           corresponding node in CLOW. 
+%   D:      NHIGHx1 geodesic distances from a node in CHIGH and the nearest
+%           corresponding node in CLOW.
 %
 % It is assumed that the low and high resolution surfaces were constructed
 % using AFNI's or Freesurfer's mapicosehedron (see SURFING_MAPLOW2HIRES)
@@ -32,7 +32,7 @@ function [vonl2h,vonh2l,mindist]=surfing_lowres2vonoroi(c1,c2,f2,r)
 
 
 if nargin<4
-    r=6; 
+    r=6;
 end
 rinc=6;  %increment of radius
 rmult=1; %multiply radius
@@ -62,7 +62,7 @@ while true
         vonh2l(idxs(msk))=k;
         mindist(idxs(msk))=dist(msk);
     end
-    
+
     infcount=sum(isinf(mindist));
     toc();
     if infcount==0 || returnimmediately

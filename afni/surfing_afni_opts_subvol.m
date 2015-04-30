@@ -16,7 +16,7 @@ function [opts,b2s]=surfing_afni_opts_subvol(I,mn,mx)
 % Update (Jan 2010): With the new BrikLoad option '.Voxels', the present
 % function is more or less obsolute. Use SURFING_REDUCEMAPPING instead,
 % which allows for indicating for which voxels data is loaded.
-%        
+%
 % NNO Oct 2010
 
 if ischar(I)

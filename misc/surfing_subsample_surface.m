@@ -9,7 +9,7 @@ function [vv,ff]=surfing_subsample_surface(v,f,niter,min_ratio)
 %   niter       Number of iterations (default: 1)
 %   min_ratio   Minimal surface ratio between original and replacement
 %               faces; default .2
-%   
+%
 % Outputs:
 %   vv          PPx3 coordinates of PP nodes (PP<=P)
 %   ff          QQx3 node indices for QQ faces (QQ<=Q)
@@ -31,12 +31,12 @@ function [vv,ff]=surfing_subsample_surface(v,f,niter,min_ratio)
 %    this surface can be described by
 %    >> v=[0 -1 -2 -1 1 2 1 3 4 3;0 -2 0 2 2 0 -2 2 0 -2;zeros(10,1)]';
 %    >> f=[1 1 1 1 1 1 5 8 6 6; 2 3 4 5 6 7 8 9 9 10; 3 4 5 6 7 2 6 6 10 7]';
-% 
+%
 %    To subsample this surface for two iterations gives:
 %    >> [vv,ff]=surfing_subsample_surface(v,f,2)
 %
 %    vv =
-% 
+%
 %     -1    -2     0
 %     -2     0     0
 %     -1     2     0
@@ -45,10 +45,10 @@ function [vv,ff]=surfing_subsample_surface(v,f,niter,min_ratio)
 %      3     2     0
 %      4     0     0
 %      3    -2     0
-% 
-% 
+%
+%
 %    ff =
-% 
+%
 %      1     2     3
 %      1     3     4
 %      1     4     5
@@ -57,7 +57,7 @@ function [vv,ff]=surfing_subsample_surface(v,f,niter,min_ratio)
 %      4     7     8
 %
 %   corresponding to (with also edge 4-7 being a straight line)
-%   
+%
 %           1 ----- 2 ----- 8
 %          /|\      |      / \
 %         / | \ III | IV  /   \
@@ -67,15 +67,15 @@ function [vv,ff]=surfing_subsample_surface(v,f,niter,min_ratio)
 %         \ | II  \ | / ----- /
 %          \|      \|// V    /
 %           3 ----- 4 ----- 5
-%   
+%
 %   which shows a reduction by two nodes and 4 faces.
-% 
+%
 % Notes:
 %  - this function uses a repeated application of
 %    node half-collapse; for details see surfing_node_half_collapse
-%  - only 'simple' nodes are replcated; for details see 
+%  - only 'simple' nodes are replcated; for details see
 %    surfing_surface_simple_nodes
-%  
+%
 % See also: surfing_surface_simple_nodes, surfing_node_half_collapse
 %
 % NNO May 2014
@@ -97,7 +97,7 @@ if niter==0
     return
 elseif niter>1
     for iter=1:niter
-        
+
         [vv,ff]=surfing_subsample_surface(v,f,1,min_ratio);
         nv=size(v,1);
         nvv=size(vv,1);
@@ -109,7 +109,7 @@ elseif niter>1
     end
     return
 end
-   
+
 nf=size(f,1);
 
 % get 'simple' nodes - only those are potentially removed
@@ -150,32 +150,32 @@ nv_removed=0;
 
 while ~all(visited | ~is_simple)
     for npth=3:max(npths)
-        
+
         % get candidates with path around it of 'col' nodes
         candidates=find(npths==npth & ~visited);
         if isempty(candidates)
             continue;
         end
-        
+
         % add candidates to queue
         ncandidates=numel(candidates);
         queue(queue_start+(1:ncandidates))=candidates;
         queue_end=queue_end+ncandidates;
-        
+
         % loop over node candidates
         while queue_start<queue_end
             % pop a new node candidate from the queue
             queue_start=queue_start+1;
-            vq=queue(queue_start); 
-            
+            vq=queue(queue_start);
+
             % show progress
             if queue_start==1 || mod(queue_start, progress_step)==0
                 msg=sprintf('%d nodes: %.1f%% removed', ...
                                         nv, nv_removed*100/nv);
                 prev_msg=surfing_timeremaining(clock_start,...
-                                            queue_start/nv,msg,prev_msg); 
+                                            queue_start/nv,msg,prev_msg);
             end
-            
+
             % if already visited then ignore this node
             if visited(vq)
                 continue;
@@ -203,7 +203,7 @@ while ~all(visited | ~is_simple)
 
                 % see which faces are common in both nodes
                 m=bsxfun(@eq,fq',fr);
-                
+
                 % mask for vq that is 'true' wherever a face in fq is also
                 % contained in fr
                 m_q=sum(m,2)>0;
@@ -215,7 +215,7 @@ while ~all(visited | ~is_simple)
                 % faces in node vq not in common with node vr; these
                 % faces are kept
                 q_f_keep=fq(~m_q);
-                
+
                 % get cross product for each of the faces
                 cross_orig=f_cross(q_f_keep,:);
 
@@ -233,7 +233,7 @@ while ~all(visited | ~is_simple)
                 % products; negative values indicate an (undesirable)
                 % triangle flip
                 inner=sum(cross_new.*cross_orig,2);
-                
+
                 % if any replacement caused a triangle flip then
                 % do not continue
                 if ~all(inner>0);
@@ -252,11 +252,11 @@ while ~all(visited | ~is_simple)
 
                 % store mapping from old to new
                 old2new(vq)=vr;
-                
+
                 % set node and faces to be removed
                 v_keep(vq)=false;
                 f_keep(fq(m_q))=false;
-                
+
                 % keep track of how many nodes were removed
                 nv_removed=nv_removed+1;
 
@@ -276,7 +276,7 @@ ff=reshape(q,[],3);
 
 % update progress
 msg=sprintf('%d nodes: %.1f%% removed', nv, nv_removed*100/nv);
-surfing_timeremaining(clock_start,1,msg,prev_msg); 
+surfing_timeremaining(clock_start,1,msg,prev_msg);
 
 % remove duplicate triangles
 [sff,i]=sortrows(sort(ff')');

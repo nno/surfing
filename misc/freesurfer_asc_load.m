@@ -1,7 +1,7 @@
 function [v,f]=freesurfer_asc_load(varargin)
 % Loads freesurfer ascii surface files
 %
-% [V,F]=FREESURFER_LOAD(FN) 
+% [V,F]=FREESURFER_LOAD(FN)
 % INPUT:
 %   FN    Filename of ascii freesurfer to load
 % OUTPUT
@@ -12,7 +12,7 @@ function [v,f]=freesurfer_asc_load(varargin)
 % remains Px3, but it is verified that all input files have the same
 % topology; if not, an error is thrown.
 %
-% If only one output argument is given, then S=FREESURFER_LOAD(FN) 
+% If only one output argument is given, then S=FREESURFER_LOAD(FN)
 % returns a struct S with S.coords=V and S.faces=F.
 %
 % NNO June 2009, updated May 2010
@@ -41,7 +41,7 @@ if nsurfs>1
             if k==1
                 f=sk.faces;
             else
-                fk=sk.faces; 
+                fk=sk.faces;
                 d=f(:)-fk(:);
                 if max(d)>0
                     error('Different topology for surface 1 and %d (%s)',k,surffns{k});
@@ -65,7 +65,7 @@ if nsurfs>1
         end
     end
     return
-end     
+end
 
 fn=varargin{1};
 

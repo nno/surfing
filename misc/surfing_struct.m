@@ -4,16 +4,16 @@ function [R,S,T]=surfing_struct(varargin)
 % R=surfing_struct(A1,A2,...)
 %
 % The "allowed form" of arguments A1,A2,... can be:
-% - Ai, Ai+1 are a KEY, VALUE, pair, where KEY is a string (that can be 
+% - Ai, Ai+1 are a KEY, VALUE, pair, where KEY is a string (that can be
 %   used as a variable name) and VALUE can be of any type
 % - Ai is a struct, where fieldnames are treated as KEY and the
 %   corresponding value Ai.(KEY) as VALUE
 % - Ai is a cell with elements in the "allowed form" (see above)
-% 
-% The result R is a struct with KEYs (the fieldnames) and corresponding 
+%
+% The result R is a struct with KEYs (the fieldnames) and corresponding
 % VALUEs assigned. If a KEY is used multiple times, the corresponding VALUE
 % from the *last* occurence of KEY is taken.
-% 
+%
 % Special modifier arguments are:
 % - if Ai=='!', then Ai+1 is a cell with strings of allowed  keys
 % - if Ai=='?', "                                 " required "  "
@@ -36,9 +36,9 @@ function [R,S,T]=surfing_struct(varargin)
 %  surfing_struct('a',1,'b',true,'c','hello') assigns the values 1, true and
 %     'hello' to variables a, b and c in the calling function.
 %
-%  S=surfing_struct(D,varargin,'?',{'a','b'}), used in a function body where D 
+%  S=surfing_struct(D,varargin,'?',{'a','b'}), used in a function body where D
 %     is a struct with default values, assigns the values in D first, then
-%     overwrites them by the values passed to the function. If the keys 'a' 
+%     overwrites them by the values passed to the function. If the keys 'a'
 %     and 'b' are not present (in D or varargin), an error is given.
 %
 % NNO Jan 2011, after processparameters (Feb 2010)
@@ -51,9 +51,9 @@ Rs=cell(1,n); % cell for gathering structs (with the keys and values)
 freepos=1;    % first free cell in Rs
 
 specialchars='!?-'; % allowed and required key names, and fields to be removed
-                   % note that these are not valid variable names, so their 
-                   % use is not ambigous                 
-specialfields=cell(1,numel(specialchars)); % support for '!', '?' and '-'                  
+                   % note that these are not valid variable names, so their
+                   % use is not ambigous
+specialfields=cell(1,numel(specialchars)); % support for '!', '?' and '-'
 
 k=1; % argument position
 
@@ -61,7 +61,7 @@ while k<=n % loop over arguments, collect keys and values in Rs
     argk=varargin{k};
     if iscell(argk)
         valk=me(argk{:}); % call recursively
-        
+
         kplus=1; % increase of k
         fplus=1; % increase of freepos
     elseif ischar(argk) && ~isempty(argk)
@@ -73,7 +73,7 @@ while k<=n % loop over arguments, collect keys and values in Rs
                 end
                 kplus=2;
                 fplus=0;
-                
+
                 valk=varargin{k+1};
                 if ~iscell(valk)
                     error('Value after ''%s'' should be a cell', specialchars(pfind));
@@ -89,7 +89,7 @@ while k<=n % loop over arguments, collect keys and values in Rs
         else
             error('Missing value after %s', argk);
         end
-        
+
     elseif isstruct(argk) % easy - just proceed
         valk=argk;
         kplus=1;
@@ -117,7 +117,7 @@ for k=1:(freepos-1)
         for j=1:numel(fns)
             R.(fns{j})=Rsk.(fns{j});
         end
-    else 
+    else
         error('This should not happen');
     end
 end
@@ -146,10 +146,10 @@ for j=1:numel(specialchars)
     if ~isempty(sfs)
         for k=1:numel(sfs)
             if ~ischar(sfs{k})
-                error('Only strings in cell after ''%s'' are supported', specialchars(j)); 
+                error('Only strings in cell after ''%s'' are supported', specialchars(j));
             end
         end
-    
+
         switch specialchars(j)
             case '!'
                 trgs=keys;
@@ -165,7 +165,7 @@ for j=1:numel(specialchars)
             otherwise
                 error('this should not happen');
         end
-           
+
         for k=1:numel(trgs)
             trgk=trgs{k};
             if isempty(strmatch(trgk,matches))
@@ -189,4 +189,4 @@ switch nargout
         T=n;
     otherwise
         error('Not supported: %d output arguments', nargout);
-end        
+end

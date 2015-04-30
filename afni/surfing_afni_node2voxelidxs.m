@@ -3,7 +3,7 @@ function idxs=surfing_afni_node2voxelidxs(Info,vertw,vertp,n,orientation)
 %
 % IDXS=SURFING_NODE2VOXELIDXS(INFO,WSURF,PSURF,N,ORIENT) takes an afni
 % volume with info INFO and inner and outer surfaces WSURF and PSURF in
-% orientation ORIENT, and returns N linear indices per node in IDXS. 
+% orientation ORIENT, and returns N linear indices per node in IDXS.
 %
 % WSURF and PSURF should be Px3 matrices for P nodes with x, y, z
 % coordinates. The result IDX is a PxN matrix
@@ -38,9 +38,9 @@ if three1 ~= 3 || three2 ~= 3
 end
 
 % Relative position s is specified as going along the line from a wm (=0) to
-% pial node (=1). 
+% pial node (=1).
 steps_w2p=zeros(1,1,1,n);
-steps_p2w=zeros(1,1,1,n);  
+steps_p2w=zeros(1,1,1,n);
 
 if n==1
     verts_weighted=0.5*(vertw+vertp);
@@ -62,7 +62,7 @@ else
     steps_rep=zeros(nvertw,3,2,n,'single');
     steps_rep(:,:,1,:)=repmat(steps_w2p,[nvertw,3,1,1]);
     steps_rep(:,:,2,:)=repmat(steps_p2w,[nvertw,3,1,1]);
-    
+
     % weighted vertices, and reshaped in a Qx3 matrix
     verts_weighted=reshape(shiftdim(squeeze(sum(steps_rep .* verts_rep, 3)),2),nvertw*n,3);
 end

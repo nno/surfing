@@ -34,5 +34,5 @@ for k=1:3
     msk=i(:,k)>0;
     n_sum(msk,:)=n_sum(msk,:)+face_normals(i(msk,k),:);
 end
-    
+
 node_normals=bsxfun(@rdivide,n_sum,surfing_eucldist(n_sum',[0 0 0]'));

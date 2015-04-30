@@ -1,7 +1,7 @@
 function [nodeidxs, minds]= surfing_voxel2node(vxyz, nxyz)
-% maps voxels coordinates to node coordinates 
+% maps voxels coordinates to node coordinates
 %
-% [NODEIDXS, MINDS]=SURFING_VOXEL2NODE(VXYZ,NXYZ) 
+% [NODEIDXS, MINDS]=SURFING_VOXEL2NODE(VXYZ,NXYZ)
 % INPUTS:
 %   VXYZ:       3xP matrix for P voxel coordinates
 %   NXYZ:       3xQ matrix for Q node coordinates
@@ -24,6 +24,6 @@ ds=surfing_eucldist(vxyz,nxyz); % voxelxnodesCoord matrix
 [minds, nodeidxs]= min(ds,[],2);
 %----if the minimal distances are getting to big warn the user
 if max(minds)>4
-    warning('voxels have a distance that is bigger than 4mm!') 
+    warning('voxels have a distance that is bigger than 4mm!')
 end
 

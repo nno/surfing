@@ -16,7 +16,7 @@ function [v2vs,mn,mx,vORr]=surfing_voxelselection_volume(spheredef,voldef,center
 %   CENTERIDXS:  1xP vector with linear indices of searchlight center voxels
 %                all values should be in range 1:PROD(VOLDEF.dim)
 %                If omitted, default is all center indices
-%   PROGRESSTEP  show progress every PROGRESSTEP voxels 
+%   PROGRESSTEP  show progress every PROGRESSTEP voxels
 %                (default: 1000, use 0 for mute)
 % OUTPUTS:
 %   V2VS         1xP cell, with V2VS{k} containing the linear indices of the
@@ -117,20 +117,20 @@ for k=1:centercount % loop of center voxels
     voxk=voxorder(k);
     centeridx=centeridxs(voxk);
     ignorevoxel=~mask(centeridx); % if outside the mask, ignore this as the center
-    
+
     aroundcount=0;
     if ~ignorevoxel
         centerijk=centerijks(voxk,:); % sub index for this center voxels
         aroundijks=bsxfun(@plus,centerijk,maskoffsets); % add offsets to get sub indices of surrounding voxels
         aroundidxs=phoebe_subs2inds(dim,aroundijks); % convert to linear indices
-        
+
         keepmask=~isnan(aroundidxs); % see which voxels are inside the volume
-        
+
         aroundidxskeep=aroundidxs(keepmask); % indices around center node inside volume
-        aroundidxsmask=mask(aroundidxskeep); % get mask values for the voxels to keep 
-        
-        keepmask(keepmask)=aroundidxsmask;  
-        
+        aroundidxsmask=mask(aroundidxskeep); % get mask values for the voxels to keep
+
+        keepmask(keepmask)=aroundidxsmask;
+
         if fixedradius
             % easy!
             radiusk=sphereradius;
@@ -143,12 +143,12 @@ for k=1:centercount % loop of center voxels
             lastidx=min(sum(keepmask),targetvoxelcount);
             tofarmask=true(sum(keepmask),1);
             tofarmask(1:lastidx)=false;
-            
+
             keepmask(keepmask)=~tofarmask;
             radiusk=arounddistances(sidxs(lastidx));
         end
         aroundidxs=aroundidxs(keepmask); % also get rid of voxels outside the mask
-        
+
         aroundcount=numel(aroundidxs); % number of voxels in searchlight
         if aroundcount==0
             ignorevoxel=true;
@@ -156,15 +156,15 @@ for k=1:centercount % loop of center voxels
             warning('Voxel %d: selected only %d < %d voxels', voxk, aroundcount, targetvoxelcount);
         end
     end
-    
+
     aroundcountsum=aroundcountsum+aroundcount;
     ignorevoxel=ignorevoxel || aroundcount==0;
-    
+
     if ~ignorevoxel
         v2vs{voxk}=uint32(aroundidxs)'; % save linear indices of voxels in searchlight
         mn(voxk,:)=min(lin2sub(aroundidxs));
         mx(voxk,:)=max(lin2sub(aroundidxs));
-        
+
         if fixedradius
             vORr(voxk)=aroundcount;
         else
@@ -173,21 +173,21 @@ for k=1:centercount % loop of center voxels
         ascenter(voxk)=true; % mark as center
         rs(voxk)=radiusk;
     end
-    
+
     if progressstep % show progress?
         if k==1 || mod(k,abs(progressstep))==0 || k==centercount; % show progress in beginning, every PROGRESSSTEP nodes, and at the end
 
             if progressstep<0, clc(); end
             tc=toc();
             eta=(centercount-k)/k*tc;
-            
-            ascentercount=sum(ascenter); 
+
+            ascentercount=sum(ascenter);
             meanradius=mean(rs(ascenter));
             rtxt=sprintf('r=%.2f, %.1f vox',meanradius,aroundcountsum/ascentercount); % radius and voxel count text
-            
+
             fprintf('Completed %d / %d center voxels (%.1f%%), %s, took %d sec, ETA %d sec\n',k,centercount,k/centercount*100,rtxt,round(tc),round(eta));
         end
     end
-    
+
 end
-    
+

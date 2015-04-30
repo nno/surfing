@@ -21,11 +21,11 @@ else
     p=v(i,:);
     q=v(j,:);
     r=v(k,:);
-    
+
     theta=angle(bsxfun(@minus,p,q),bsxfun(@minus,r,q));
 end
-    
-    
+
+
 
 
 function theta=angle(a,b)

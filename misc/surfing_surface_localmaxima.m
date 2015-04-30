@@ -4,7 +4,7 @@ function [is,mx]=surfing_surface_localmaxima(v,f,data,mindist,thr)
 % IDXS,MX=SURFING_LOCALMAXIMA(V,F,DATA,MINDIST,THR)
 % INPUTS:
 %   V        3xP surface coordinates for P nodes
-%   F        3xQ node indices for Q triangles 
+%   F        3xQ node indices for Q triangles
 %   DATA     1xP data on which maxima are to be found
 %   MINDIST  Minimum distance between local maxima
 %   THR      Treshold to which data is submitted to before maxima are found
@@ -12,10 +12,10 @@ function [is,mx]=surfing_surface_localmaxima(v,f,data,mindist,thr)
 %   IDXS     Indices of nodes with local maxima n descending order
 %   MX       Local maxima values
 %
-% Distances are measured with geodesic metric. Nodes returned in IDXS have 
-% at least value THR and are at least MINDIST apart. 
+% Distances are measured with geodesic metric. Nodes returned in IDXS have
+% at least value THR and are at least MINDIST apart.
 %
-% In other words: for each node with index IDX in IDXS, all nodes within 
+% In other words: for each node with index IDX in IDXS, all nodes within
 % distance MINDIST from V(:,MX(IDX), all other nodes have a value less than
 % or equal to MX(IDX)
 %
@@ -71,7 +71,7 @@ tic();
 for k=1:nlocalmax
     maxidx=localmaxidxs(is(k));
     if ~localmax(maxidx)
-        continue; 
+        continue;
     end % skip, not a local maximum anymore
     aroundidxs=surfing_circleROI(v',f',maxidx,mindist,n2f);
     localmax(aroundidxs)=false; % remove other nearby local maxima

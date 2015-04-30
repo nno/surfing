@@ -44,7 +44,7 @@ for hemi='lr'
     fnroot=sprintf(['%sh_' icopat '%s'],hemi,icold,view);
     headerlines=sprintf('# Created %s\nGroup = all\n',datestr(now));
     lines=[];
-    
+
     n=numel(ifxs);
     for k=1:n
         ifx=ifxs{k};
@@ -59,37 +59,37 @@ for hemi='lr'
                 continue;
             end
         end
-        
+
         if k==1
             ldp='SAME';
             parent=surffn;
         else
             ldp=parent;
         end
-        
-        
+
+
         lines=sprintf(['%s\nNewSurface\nSurfaceFormat = ASCII\nSurfaceType = FreeSurfer\n' ...
 					'FreeSurferSurface = %s\nLocalDomainParent = %s\n'...
 					'SurfaceState = %s\nEmbedDimension = 3\n\n'],...
                     lines,surffn,ldp,ifx);
-        
+
         headerlines=sprintf('%sStateDef = %s\n',headerlines,ifx);
     end
-    
+
     lines=sprintf('%s\n%s',headerlines,lines);
 
-    
+
     specfn=sprintf('%sspec_%s.spec',aligndir,fnroot);
     seesumafn=sprintf('%s%s_seesuma.sh',aligndir,fnroot);
-    
+
     seesumalines=sprintf('export SUMA_AllowDsetReplacement=YES;killall afni\nafni -niml &\nsuma -spec %s -sv %s', nopath(specfn), nopath(surfvolalfn));
-    
+
     writestr(specfn,lines);
     writestr(seesumafn,seesumalines);
-    
+
     cmd=sprintf('%schmod u+x %s;',cmd,seesumafn);
     unix(cmd);
-    
+
     fprintf(['\nSpec file for %sh written to %s\nTo view in SUMA and AFNI, start a shell and run:\n' ...
         '  cd %s\n  ./%s\n\n'], hemi, specfn, aligndir, nopath(seesumafn));
 end
