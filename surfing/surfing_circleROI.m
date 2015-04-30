@@ -9,7 +9,7 @@ function [coordidx,D,scoords,vORr]= surfing_circleROI(coords,faces,centervertex_
 %   radius:     the radius of the circle; use [R C] to select C nodes with
 %               initial radius R
 % OPTIONAL INPUTS
-%   distmetric: distancemetric: 'euclidian' or 'dijkstra' or 'geodesic' (default)
+%   distmetric: distancemetric: 'euclidean' or 'dijkstra' or 'geodesic' (default)
 %   n2f:        for faster computation, a to face mapping N2V (NxM, if each node is contained 
 %               in M faces at most); see SURFING_NODEIDXS2FACEIDXS. 
 %               This option is required only for 'dijkstra' and
@@ -43,7 +43,7 @@ end
 variableradius=numel(radius)>1;
 if variableradius
     radiusgrow=1.5; 
-    radiuswarn=200;
+    radiusmax=200;
     if radius(1)==0
         radius(1)=10;
     end
@@ -57,15 +57,23 @@ if ~isequal([size(coords,1),size(faces,1)],[3 3])
     error('Expected three dimensional coords and faces matrices');
 end
 
+skip_node=any(isnan(coords(:,centervertex_idx)));
+if skip_node
+    coordidx=zeros(1,0);
+    D=zeros(1,0);
+    scoords=zeros(3,0);
+    return
+end
+
 while true
     switch distancemetric
-        case 'euclidian'
+        % earlier versions had a typo in euclidean, so support
+        % both the name with the typo and without
+        case {'euclidian','euclidean'};
             D=surfing_eucldist(coords(:,centervertex_idx),coords)';  
             vidxs=(1:size(coords,2))'; % all vertex indices
 
         case 'geodesic'
-            % as of June 2013 this is obsolete. Releases before this date
-            % used the code below
             [sv, sf, si,vidxs, fidxs]=surfing_subsurface(coords, faces, centervertex_idx, radius(1), n2f); % construct correct sub surface
 
             % this requires the Fast Marching toolbox (Peyre)
@@ -76,10 +84,10 @@ while true
             D=surfing_dijkstradist(sv,sf,si,radius(1));
             
         otherwise
-            error('Unknown distance metric %s, use ''geodesic'' or ''dijkstra'' or ''euclidian''',distancemetric);
+            error('Unknown distance metric %s, use ''geodesic'' or ''dijkstra'' or ''euclidean''',distancemetric);
     end
     
-    nodemask=D<=radius(1); % selected nodes
+    nodemask=isfinite(D) & D<=radius(1); % selected nodes
 
     if ~variableradius || sum(nodemask)>=radius(2)  % big enough      
         break;
@@ -87,8 +95,15 @@ while true
     
     % too small; increase radius and try again
     radius(1)=radius(1)*radiusgrow;
-    if radius(1)>radiuswarn
-        warning('Radius has become really big: %d mm', radius(1));
+    if radius(1)>=radiusmax
+        if isinf(radius(1))
+            error(['unable to select %d nodes around node %d, maximum '...
+                        'count is %d'], ...
+                        radius(2) , centervertex_idx, sum(nodemask));
+        else
+            radius(1)=Inf;
+            % and try on next iteration try to get all nodes
+        end
     end
 end
 
