@@ -1,13 +1,13 @@
 function pos=surfing_inds2subs(siz, is)
 % Multiple subscripts from linear indices; a generalization of IND2SUB
 %
-% P=SURFING_INDS2SUBS(SIZ,IS) returns the subscripts POS for each of the 
-% linear indices in IS based on a matrix with dimensions SIZ. 
-% If SIZ=[s1, ..., sn] refers to a matrix of size s1 x ... x sN, and IS is 
-% a M x 1 vector that contains the linear indices, then POS is a M x N 
+% P=SURFING_INDS2SUBS(SIZ,IS) returns the subscripts POS for each of the
+% linear indices in IS based on a matrix with dimensions SIZ.
+% If SIZ=[s1, ..., sn] refers to a matrix of size s1 x ... x sN, and IS is
+% a M x 1 vector that contains the linear indices, then POS is a M x N
 % matrix where each row contains the corresponding subscripts.
 %
-% For every index in IS that is out of bounds, the corresponding row 
+% For every index in IS that is out of bounds, the corresponding row
 % elements in P contains NaN. If IS is of type int32, however, the
 % corresponding elements are set to zero.
 %
@@ -18,7 +18,7 @@ function pos=surfing_inds2subs(siz, is)
 
 
 rowcount=numel(is);
-if size(is,2) ~= 1 
+if size(is,2) ~= 1
     if size(is,1) == 1
         is=is';
     else
@@ -47,7 +47,7 @@ dimprod=cast(prod(double(siz)),clis);
 alot=1e6; % in case we have lots of indices, split them up
 if rowcount>alot
     % divide in different chunks
-    % rationale: REPMAT (used below) is unable to return an int32 directly, 
+    % rationale: REPMAT (used below) is unable to return an int32 directly,
     % so we would run out of memory otherwise
     pos=zeros(rowcount,dimcount,clis);
     for k=1:alot:rowcount
@@ -71,8 +71,8 @@ inboundscount=rowcount-outofboundscount;
 
 % find remainders for each of the dimensions
 
-% NNO June 2010: this is the tricky (and hacky) part, as we want 'good' behaviour for 
-% both int32 (where results are rounded) and doubles (where results are not rounded). 
+% NNO June 2010: this is the tricky (and hacky) part, as we want 'good' behaviour for
+% both int32 (where results are rounded) and doubles (where results are not rounded).
 rem=round((2*repmat(is(~outofbounds)-1,1,dimcount)-repmat(mply,inboundscount,1)) ./ (2*repmat(mply,inboundscount,1)));
 clear diff;
 

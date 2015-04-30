@@ -2,21 +2,21 @@ function linidxsrs=surfing_coords2linvoxelidxs(coords,voldef,dim,mask)
 % maps coordinates to linear voxel indices
 %
 % I=SURFING_COORDS2VOXELIDXS(C,VOLDEF)
-% INPUTS: 
-%   C:       A 3xN matrix or 3xPxQ array with (x,y,z) coordinates 
-%   VOLDEF:  Struct with fields .mat (4x4 voxel to coordinate transformation matrix 
+% INPUTS:
+%   C:       A 3xN matrix or 3xPxQ array with (x,y,z) coordinates
+%   VOLDEF:  Struct with fields .mat (4x4 voxel to coordinate transformation matrix
 %            rom the images to be sampled (1-based)) and .dim (1x3
 %            volume dimensions in voxels)
-%            Optionally a field .mask may be specified (Nx1 or IxJxK) that 
-%            specifies which voxels should be included. 
+%            Optionally a field .mask may be specified (Nx1 or IxJxK) that
+%            specifies which voxels should be included.
 % OUTPUT:
 %   I:       Nx1 vector or PxQ matrix with linear voxel indices
-%            Indices outsize the volume (and if voldef.mask is specified, 
+%            Indices outsize the volume (and if voldef.mask is specified,
 %            unselected voxels) are set to NaN.
-% 
+%
 % * Alternative input is SURFING_COORDS2VOXELIDXS(C,MAT,DIM[,MASK])
 % * To obtain unique indices, run SURFING_UNIQUEIDXSPERROW
-% 
+%
 % TW,NNO May 2010
 %
 % See also SURFING_NODEIDXS2COORDS, SURFING_UNIQUEIDXSPERROW,
@@ -39,7 +39,7 @@ if nargin<3
     elseif isfield(voldef,'mask'); 	% see if voxel mask is specified
 		mask=voldef.mask;
     end
-    
+
     usemask=~isnan(mask);
 else
     mat=voldef;
@@ -79,17 +79,17 @@ end
 
 % map to 3xP matrix (P coordinates)
 coords= reshape(coords, 3,[]);
-coords=[coords;ones(1,size(coords,2))];                  
+coords=[coords;ones(1,size(coords,2))];
 
 ijk=(mat\coords);  % apply transformation
 ijk=round(ijk(1:3,:)); %keep (x,y,z) dimensions, and round the result to nearest integer
 
-alllinidxs=surfing_subs2inds(dim,ijk'); % make it linear indices 
-linidxs=alllinidxs; 
+alllinidxs=surfing_subs2inds(dim,ijk'); % make it linear indices
+linidxs=alllinidxs;
 
 if usemask
     insidevolmask=~isnan(alllinidxs); % voxels inside the volume
-    voxelmask=false(size(alllinidxs)); 
+    voxelmask=false(size(alllinidxs));
     voxelmask(insidevolmask)=mask(alllinidxs(insidevolmask)); % conjunction of inside the volume and selected with voxel mask
     linidxs(~voxelmask)=NaN; % set values outside the conjunction mask to NaN
 end	

@@ -1,7 +1,7 @@
 function ds=surfing_eucldist(xs,ys)
 % computes the euclidian distance between points
 %
-% DS=SURFING_EUCLDISTANCEFROM(XS,YS) 
+% DS=SURFING_EUCLDISTANCEFROM(XS,YS)
 % INPUTS:
 %   XS:   3xP matrix for P coordinates
 %   YS:   3xQ matrix for Q coordinates

@@ -2,7 +2,7 @@ function final_dist=surfing_dijkstradist(coords,faces,center_idx,max_distance,nb
 % Computes dijkstra distance on a surface mesh
 %
 % final_dist=surfing_dijkstradist(coords,faces,center_idx,max_distance,nbrs)
-% 
+%
 % INPUTS:
 %   coords:         3xP coordinates for P vertices
 %   faces:          3xQ vertex indices for Q faces
@@ -45,37 +45,37 @@ tent_dist(center_idx)=0;
 
 while sum(candidates_mask)>0
     candidates_idxs=find(candidates_mask);
-    
+
     % find the candidate with the lowest tentative distance
     [d,i]=min(tent_dist(candidates_idxs));
     ifull=candidates_idxs(i);
     candidates_mask(ifull)=false; % not a candidate anymore
-    
+
     if ~isinf(final_dist(ifull))
         continue % already has a final distance
     end
-    
+
     % determine the neighbors
     nbr=nbrs(ifull,:);
     nbr=nbr(nbr>0);
-    
+
     % take distance of candidate plus distance to each neighbor
-    nbr_dist=d+surfing_eucldist(coords(:,ifull),coords(:,nbr)); 
-    
+    nbr_dist=d+surfing_eucldist(coords(:,ifull),coords(:,nbr));
+
     % see for which neighbors to update the tentative distance
     nbr_mask=nbr_dist<=max_distance & (isinf(tent_dist(nbr)) | nbr_dist<tent_dist(nbr));
     update_nbr_mask=nbr(nbr_mask);
-    
+
     % update tentative distance
     tent_dist(update_nbr_mask)=nbr_dist(nbr_mask);
     candidates_mask(update_nbr_mask)=true;
-    
+
     % set the final distance
     final_dist(ifull)=tent_dist(ifull);
 end
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+

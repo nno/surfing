@@ -2,17 +2,17 @@ function y=surfing_uniqueidxsperrow(x)
 % returns unique indices per row
 %
 % UNIQUEIDXS=SURFING_UNIQUEIDXSPERROW(IDXS)
-% 
+%
 % INPUT:
 %   IDXS:       NxP matrix, for N rows with P indices each.
 % OUTPUT:
 %   UNIQUEIDXS: NxQ matrix, Q<=P, where each row contains the unique
-%               values in the corresponding row from IDXS. 
+%               values in the corresponding row from IDXS.
 %               Only positive values in IDXS are returned, and
 %               each row may contain zeros in case duplicate values
 %               were found in that row.
-% 
-% This function has also been implemented in C, which runs a lot faster 
+%
+% This function has also been implemented in C, which runs a lot faster
 % (output is slightly different but conforms to the specification).
 % If MEX is set up, run "mex surfing_uniqueidxsperrow.c" for increased
 % speed.
@@ -31,7 +31,7 @@ end
 yncols=find(sum(y>0)==0,1)-1;
 
 % if all columns have a non-zero element then yncols is empty, and y is kept as is.
-if ~isempty(yncols) 
+if ~isempty(yncols)
     y=y(:,1:yncols);
 end
 

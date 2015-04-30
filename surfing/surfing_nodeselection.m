@@ -2,7 +2,7 @@ function [n2ns,radii]=surfing_nodeselection(v,f,circledef,dist_metric,progressst
 % gives indices of neighboring nodes for each node
 %
 % [n2ns,ds]=surfing_nodeselection(v,f,circledef[,dist_metric])
-% 
+%
 % Inputs:
 %   v               3xP node coordinates for P nodes
 %   f               3xQ face indices for Q faces
@@ -30,17 +30,23 @@ show_progress=~isempty(progressstep) && progressstep~=0;
 nv=size(v,2);
 n2ns=cell(nv,1); % mapping from center node to surrounding nodes
 
+skip_node_mask=any(~isfinite(v),1);
+
 if isnan(circledef)
     [n2ns_matrix,all_radii]=surfing_surface_nbrs(f',v');
     for k=1:nv
-        node_indices=n2ns_matrix(k,:);
+        if skip_node_mask(k)
+            node_indices=zeros(1,0);
+        else
+            node_indices=n2ns_matrix(k,:);
+        end
         n2ns{k}=node_indices(node_indices>0);
     end
     radii=max(all_radii,[],2);
     return
 end
 
-% for speedup, precompute mapping 
+% for speedup, precompute mapping
 n2f=surfing_invertmapping(f');
 
 
@@ -59,10 +65,10 @@ for k=1:nv
         distances=Inf;
     end
     radii(k)=max(distances);
-    
+
     if show_progress && (k<10 || mod(k,progressstep)==0 || k==nv)
         msg=sprintf('%.1f nodes per center', mean(sizes(1:k)));
         prev_msg=surfing_timeremaining(clock_start,k/nv,msg,prev_msg);
     end
 end
-    
+

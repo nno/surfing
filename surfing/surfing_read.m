@@ -10,10 +10,10 @@ function [v,f]=surfing_read(fn)
 %                 - BrainVoyager surface (.srf); requires neuroelf toolbox
 %                 - NeuroImaging Markup Language dataset (.niml.dset);
 %                   requires AFNI Matlab toolbox
-%                 - text file data (.1D or .txt) 
-% 
+%                 - text file data (.1D or .txt)
+%
 % Returns:
-%   v             Px3 surface vertex coordinates, LPI (for surfaces); or 
+%   v             Px3 surface vertex coordinates, LPI (for surfaces); or
 %                 PxQ data (for non-surfaces)
 %   f             Rx3 face indices (for surfaces); not set for
 %                 non-surfaces.
@@ -27,7 +27,7 @@ function [v,f]=surfing_read(fn)
 % Notes:
 %  - the GIFTI library currently supports anatomical files only, not
 %    functional data
-%  - Coordinates in BV surfaces are transformed from ASR to LPI, and 
+%  - Coordinates in BV surfaces are transformed from ASR to LPI, and
 %    the handedness of the faces is inverted. This way they conform better
 %    to what all other packages use.
 %
@@ -49,7 +49,7 @@ ends_with = @(x,e) ischar(x)&&numel(x)>=numel(e)&&...
 
 if ends_with(fn,'.asc')
     [v,f]=freesurfer_asc_load(fn);
-    
+
 elseif ends_with(fn,'.gii')
     % requires gifti
     w=which('gifti');
@@ -66,46 +66,46 @@ elseif ends_with(fn,'.srf')
     if isempty(w)
         error('Neuroelf is required: see neuroelf.net');
     end
-    
+
     x=xff(fn);
 
     % BV does a lot of things completely different than other packages...
-    % 
+    %
     % transformation for ASR to LPI
-    
+
     asr2lpi=[0 -1 0;0 0 -1;-1 0 0];
-    
+
     % apply transformation
     v=x.VertexCoordinate*asr2lpi+128;
-    
+
     % handedness is different 'for historical reasons' BV's authors
     % decided to do the opposite of everybody else. However because an odd
     % number of sign flips occurs in asr2lpi the orientation of the faces
     % does not have to be changed
     f=x.TriangleVertex+0; % make a copy
-    
+
 elseif ends_with(fn,'.niml.dset')
     w=which('afni_niml_readsimple');
     if isempty(w)
         error('AFNI matlab library is required: see neuroelf.net');
     end
-    
+
     v=afni_niml_readsimple(fn);
-    
+
 elseif ends_with(fn,'.1D') || ends_with(fn,'.txt')
     v=textread(fn,'','commentstyle','shell');
-    
+
 else
     w=which('freesurfer_read_surf');
     if isempty(w)
         error('FreeSurfer Matlab is required; see freesurfer.org');
     end
-    
-    try 
+
+    try
         [v,f]=freesurfer_read_surf(fn);
     catch exception
         error(['Unknown extension in %s, or unable to read FreeSurfer'...
                     ' binary file'], fn);
     end
 end
-                        
+

@@ -1,14 +1,14 @@
 function is=surfing_subs2inds(siz, pos)
 % Linear indices from multiple subscripts; a generalization of sub2ind
 %
-% IS=SURFING_SUBS2INDS(SIZ,P) returns the linear indices for each row of 
-% subscripts in P based on a matrix with dimensions SIZ. 
-% If SIZ=[s1, ..., sn] refers to a matrix of size s1 x ... x sN, and P is 
-% an M x N where each row contains the subindices referring to a single 
+% IS=SURFING_SUBS2INDS(SIZ,P) returns the linear indices for each row of
+% subscripts in P based on a matrix with dimensions SIZ.
+% If SIZ=[s1, ..., sn] refers to a matrix of size s1 x ... x sN, and P is
+% an M x N where each row contains the subindices referring to a single
 % element, then IS is a M x 1 vector with linear indices.
 %
 % For indices in P that are out of bounds, the corresponding element in IS
-% is NaN. If P is of type int32, however, the corresponding element is set 
+% is NaN. If P is of type int32, however, the corresponding element is set
 % to zero.
 %
 % If POS=[p1 ... pN] (i.e. M==1) and [p1,...,pN]=sub2ind(SIZ,IS), then

@@ -1,23 +1,23 @@
 function CS=surfing_nodeidxs2coords(cs1,cs2,idxs,linedef)
-% maps vertex indices from two surfaces to coordinates 
+% maps vertex indices from two surfaces to coordinates
 %
-% CS=SURFING_NODEIDXS2COORD(C1,C2,IDXS,LINEDEF) 
+% CS=SURFING_NODEIDXS2COORD(C1,C2,IDXS,LINEDEF)
 % INPUTS:
 %   C1,C2:    3xN coordinates for N nodes for the two surfaces.
 % OPTIONAL INPUT
 %   IDXS:     Px1 node indices to be used (default: all nodes)
 %   LINEDEF:  1x3 vector [S,MN,MAX] that specifies that S steps are taken
-%             along the lines from nodes on C1 to C2. MN and MX are 
+%             along the lines from nodes on C1 to C2. MN and MX are
 %             relative indices, where 0 corresponds to C1 and 1 to C2. The
 %             default is [5,0,1].
-%             Examples: [1,0.5,0.5] - an intermediate surface in between the 
+%             Examples: [1,0.5,0.5] - an intermediate surface in between the
 %                                     two input surfaces C1 and C2.
 %                       [10,0,1]    - ten coordinates per node along the
-%                                     lines connecting the two surfaces    
-%                       [2,0,1]     - the same coordinates as the input 
+%                                     lines connecting the two surfaces
+%                       [2,0,1]     - the same coordinates as the input
 %                                     surfaces
 % OUTPUT:
-%   CS:       3xSxP array, where CS(:,I,J) are the coordinates for the I-th 
+%   CS:       3xSxP array, where CS(:,I,J) are the coordinates for the I-th
 %             step on the line connecting the nodes on C1 and
 %             C2 with index IDXS(J).
 %
@@ -34,7 +34,7 @@ if size(cs2,1) ~= 3, cs2=cs2'; end
 if ~isequal(size(cs1),size(cs2))
     error('Number of vertices in surfaces do not match, or not 3xQ matrices')
 end
-   
+
 % select all nodes, if idxs is not given
 if nargin<3 || isempty(idxs) || ~(isnumeric(idxs) || islogical(idxs))
     idxs=1:size(cs1,2);
@@ -68,7 +68,7 @@ steps_12=repmat(relpos, 3,1);
 steps_21=repmat(1-relpos, 3,1); % reverse weights for surface 2, so that steps_12+steps_21==[1,1,....1]
 
 % construct a 4-dimesional matrix so that cs_rep(I,J,K,L) is the coordinate
-% of the I-th spatial dimension (1..3 for x..z), J-th step from surf1 to surf2, 
+% of the I-th spatial dimension (1..3 for x..z), J-th step from surf1 to surf2,
 % K-th node, and K-th surface (1 or 2).
 cs_rep=zeros(3, steps, ncs, 2); %vertices from both surfaces
 for i=1:steps
