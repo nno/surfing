@@ -1,4 +1,4 @@
-function [pths,is_simple]=surfing_surface_simple_nodes(v,f)
+function [pths,is_simple]=surfing_surface_simple_nodes(v,f,progress_step)
 % find 'simple nodes' in a surface
 %
 % [pths,is_simple]=surfing_surface_simple_nodes(v,f)
@@ -15,10 +15,11 @@ function [pths,is_simple]=surfing_surface_simple_nodes(v,f)
 %   is_simple  indicates whether a path exists around each node
 %
 % Notes:
-%   - a path around a node K is a list of node indices I_1,...,I_N so that
-%     the edges (I_1, I_2), (I_2, I_3), ... (I_{N-1}, I_N), (I_N, I_1)
-%     are all contained in a face, that each of these faces contains
-%     node K, and that there are no other faces that contain node K.
+%   - a path around a node K is a list of node indices I_1,...,I_N so that:
+%     * the edges (I_1, I_2), (I_2, I_3), ... (I_{N-1}, I_N), (I_N, I_1)
+%       are all contained in a face, and
+%     * each of these faces contains node K, and
+%     * there are no other faces that contain node K.
 %
 % Example:
 %  - consider the following surface, with arabic numerals indicating node
@@ -65,8 +66,10 @@ function [pths,is_simple]=surfing_surface_simple_nodes(v,f)
 %      0
 %      0
 
+if nargin<3 || isempty(progress_step)
+    progress_step=5000;
+end
 nv=size(v,1);
-nf=size(f,1);
 
 % mapping from nodes to faces
 v2f=surfing_nodeidxs2faceidxs(f');
@@ -89,7 +92,6 @@ col_counter=zeros(1,nmax);
 
 clock_start=clock();
 prev_msg='';
-progress_step=5000;
 
 
 for k=1:nv
@@ -130,7 +132,7 @@ for k=1:nv
         npths(k)=n;
     end
 
-    if mod(k,progress_step)==0 || k==nv
+    if progress_step && (mod(k,progress_step)==0 || k==nv)
         s=is_simple(1:k);
         msg=sprintf('%.1f%% simple nodes', sum(s)*100/nv);
         prev_msg=surfing_timeremaining(clock_start,k/nv,msg,prev_msg);
