@@ -1,4 +1,4 @@
-function [vv,ff]=surfing_subsample_surface(v,f,niter,min_ratio)
+function [vv,ff]=surfing_subsample_surface(v,f,niter,min_ratio,progress_step)
 % removes a subset of nodes to decrease the node density of a surface
 %
 % [vv,ff]=surfing_subsample_surface(v,f[,niter[,min_ratio]])
@@ -30,9 +30,9 @@ function [vv,ff]=surfing_subsample_surface(v,f,niter,min_ratio)
 %
 %    this surface can be described by
 %    >> v=[0 -1 -2 -1 1 2 1 3 4 3;0 -2 0 2 2 0 -2 2 0 -2;zeros(10,1)]';
-%    >> f=[1 1 1 1 1 1 5 8 6 6; 2 3 4 5 6 7 8 9 9 10; 3 4 5 6 7 2 6 6 10 7]';
+%    >> f=[1 1 1 1 1 1 5 8 6 6;2 3 4 5 6 7 8 9 9 10;3 4 5 6 7 2 6 6 10 7]';
 %
-%    To subsample this surface for two iterations gives:
+%    Subsampling this surface for two iterations gives:
 %    >> [vv,ff]=surfing_subsample_surface(v,f,2)
 %
 %    vv =
@@ -80,6 +80,10 @@ function [vv,ff]=surfing_subsample_surface(v,f,niter,min_ratio)
 %
 % NNO May 2014
 
+if nargin<5 || isempty(progress_step)
+    progress_step=5000;
+end
+
 if nargin<4 || isempty(min_ratio)
     min_ratio=.2;
 end
@@ -93,12 +97,11 @@ nv=size(v,1);
 if niter==0
     vv=v;
     ff=f;
-    old2new=1:nv;
     return
 elseif niter>1
     for iter=1:niter
 
-        [vv,ff]=surfing_subsample_surface(v,f,1,min_ratio);
+        [vv,ff]=surfing_subsample_surface(v,f,1,min_ratio,progress_step);
         nv=size(v,1);
         nvv=size(vv,1);
         if nvv==nv
@@ -113,7 +116,7 @@ end
 nf=size(f,1);
 
 % get 'simple' nodes - only those are potentially removed
-[pths,is_simple]=surfing_surface_simple_nodes(v,f);
+[pths,is_simple]=surfing_surface_simple_nodes(v,f,progress_step);
 npths=sum(pths>0,2);
 assert(~any(npths>0 & npths<3));
 
@@ -145,7 +148,6 @@ queue_end=0;
 % show progress to the user
 clock_start=clock();
 prev_msg='';
-progress_step=5000;
 nv_removed=0;
 
 while ~all(visited | ~is_simple)
@@ -169,7 +171,8 @@ while ~all(visited | ~is_simple)
             vq=queue(queue_start);
 
             % show progress
-            if queue_start==1 || mod(queue_start, progress_step)==0
+            if progress_step && ...
+                    (queue_start==1 || mod(queue_start, progress_step)==0)
                 msg=sprintf('%d nodes: %.1f%% removed', ...
                                         nv, nv_removed*100/nv);
                 prev_msg=surfing_timeremaining(clock_start,...
@@ -275,8 +278,10 @@ vv=v(v_keep,:);
 ff=reshape(q,[],3);
 
 % update progress
-msg=sprintf('%d nodes: %.1f%% removed', nv, nv_removed*100/nv);
-surfing_timeremaining(clock_start,1,msg,prev_msg);
+if progress_step
+    msg=sprintf('%d nodes: %.1f%% removed', nv, nv_removed*100/nv);
+    surfing_timeremaining(clock_start,1,msg,prev_msg);
+end
 
 % remove duplicate triangles
 [sff,i]=sortrows(sort(ff')');
