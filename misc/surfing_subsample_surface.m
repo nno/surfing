@@ -1,4 +1,5 @@
-function [vv,ff]=surfing_subsample_surface(v,f,niter,min_ratio,progress_step)
+function [vv,ff]=surfing_subsample_surface(v,f,niter,min_ratio,...
+                                                        progress_step)
 % removes a subset of nodes to decrease the node density of a surface
 %
 % [vv,ff]=surfing_subsample_surface(v,f[,niter[,min_ratio]])
