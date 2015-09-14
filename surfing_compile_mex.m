@@ -23,6 +23,6 @@ for k=1:n
     eval(e);
 end
 
-e=sprintf('cd %s/toolbox_fast_marching; which(''compile_mex''), compile_mex;',pwd_orig);
+e=sprintf('cd (''%s/toolbox_fast_marching''); which(''compile_mex''), compile_mex;',pwd_orig);
 eval(e)
 
