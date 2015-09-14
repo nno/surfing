@@ -19,7 +19,7 @@ n=numel(surfing_infixes);
 for k=1:n
     infix=surfing_infixes{k};
     fn=sprintf('surfing_%s.c', infix);
-    e=sprintf('cd %s; mex %s', surfing_dir, fn);
+    e=sprintf('cd(''%s''); mex %s', surfing_dir, fn);
     eval(e);
 end
 
