@@ -8,11 +8,13 @@ OCTAVE?=octave
 
 ROOTDIR=$(CURDIR)/surfing
 
-ADDPATH="addpath('$(ROOTDIR)');"
-RMPATH="rmpath('$(ROOTDIR)');"
+ADDPATH="cd('$(ROOTDIR)');surfing_set_path();"
+RMPATH="warning('off'); \
+        rmpath(genpath('$(ROOTDIR)'));"
 SAVEPATH="savepath();exit(0)"
 
-BUILD="cd('$(CURDIR)');surfing_compile_mex;exit(0)"
+BUILD="cd('$(CURDIR)'); \
+       surfing_compile_mex;exit(0)"
 INSTALL=$(ADDPATH)";"$(SAVEPATH)
 UNINSTALL=$(RMPATH)";"$(SAVEPATH)
 
@@ -37,7 +39,7 @@ help:
 	@echo "  uninstall-octave   to remove surfing from the GNU Octave search"
 	@echo "                     path"
 	@echo "  build-matlab       to compile mex code using Matlab"
-	@echo "  test-octave        to compile mex code using GNU Octave"
+	@echo "  build-octave        to compile mex code using GNU Octave"
 	@echo ""
 
 
