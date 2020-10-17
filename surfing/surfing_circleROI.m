@@ -7,7 +7,8 @@ function [coordidx,D,scoords,vORr]= surfing_circleROI(coords,faces,centervertex_
 %   faces:      3xP vertex indices for the P triangualar faces (1-based indices)
 %   centeridx:  the index of the center vertex 
 %   radius:     the radius of the circle; use [R C] to select C nodes with
-%               initial radius R
+%               initial radius R; use [R Inf A] to select X nodes whose
+%               area is about A mm^2 (just below A mm^2).
 % OPTIONAL INPUTS
 %   distmetric: distancemetric: 'euclidean' or 'dijkstra' or 'geodesic' (default)
 %   n2f:        for faster computation, a to face mapping N2V (NxM, if each node is contained 
@@ -57,6 +58,12 @@ if ~isequal([size(coords,1),size(faces,1)],[3 3])
     error('Expected three dimensional coords and faces matrices');
 end
 
+% node areas
+basedarea=numel(radius)==3;
+if basedarea
+    node2area=surfing_surfacearea(coords,faces,n2f);
+end
+
 skip_node=any(isnan(coords(:,centervertex_idx)));
 if skip_node
     coordidx=zeros(1,0);
@@ -93,6 +100,11 @@ while true
         break;
     end
     
+    % check area
+    if basedarea && sum(node2area(vidxs(nodemask))) >= radius(3)
+        break;
+    end
+    
     % too small; increase radius and try again
     radius(1)=radius(1)*radiusgrow;
     if radius(1)>=radiusmax
@@ -108,7 +120,13 @@ while true
 end
 
 % set final resutls
-if variableradius
+if basedarea
+    [dummy,is]=sort(D,'ascend');
+    cumarea=cumsum(node2area(vidxs(is)));
+    selidxs=is(cumarea<=radius(3));
+    D=D(selidxs);
+    vORr=max(cumarea(cumarea<=radius(3)));
+elseif variableradius
     [dummy,is]=sort(D,'ascend');
     issel=is(1:radius(2));
     D=D(issel)';
