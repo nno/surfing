@@ -1,28 +1,40 @@
 function [coordidx,D,scoords,vORr]= surfing_circleROI(coords,faces,centervertex_idx,radius,distancemetric,n2f) 
 % Creates a circular region of interest (ROI) on the surface given a radius
 %
-% [coordidx,D,scoords]=surfing_circleROI(coords,faces,centervertex_idx,radius,distmetric,n2f)
+% [coordidx,D,scoords]=surfing_circleROI(coords,faces,centervertex_idx,...
+%                                           radius,distmetric,n2f)
 % INPUTS:
 %   coords:     3xN coordinates for the N vertices
-%   faces:      3xP vertex indices for the P triangualar faces (1-based indices)
+%   faces:      3xP vertex indices for the P triangualar faces 
+%               (1-based indices)
 %   centeridx:  the index of the center vertex 
-%   radius:     the radius of the circle; use [R C] to select C nodes with
-%               initial radius R; use [R Inf A] to select X nodes whose
-%               area is about A mm^2 (just below A mm^2).
+%   radius:     the radius of the circle:
+%               - use R to select all nodes within radius R (typically in mm)
+%               - use [R C] to select C nodes (with initial radius R)
+%               - use [R Inf A] to select the nearest nodes nodes whose 
+%                 area together is less than or equal to area A 
+%                 (typically in mm^2)
 % OPTIONAL INPUTS
-%   distmetric: distancemetric: 'euclidean' or 'dijkstra' or 'geodesic' (default)
-%   n2f:        for faster computation, a to face mapping N2V (NxM, if each node is contained 
-%               in M faces at most); see SURFING_NODEIDXS2FACEIDXS. 
-%               This option is required only for 'dijkstra' and
-%               'geodesic_legacy'.
+%   distmetric: distance metricL 'euclidean', 'dijkstra', 
+%               or 'geodesic'  (default)
+%   n2f:        for faster computation, a to face mapping N2V (NxM, 
+%               if each node is contained in M faces at most); see 
+%               SURFING_NODEIDXS2FACEIDXS. 
+%               If omitted this mapping is computed on the fly, which is
+%               more time consuming if this function is called multiple
+%               times (use case: searchlight analysis)
 % OUTPUT: 
-%   coordidx:   1xK vector with the K vertex indices that are within distance RADIUS from the 
-%               center vertex
+%   coordidx:   1xK vector with the K vertex indices that are within 
+%               distance RADIUS from the center vertex
 %   D:          1xK vector of the distances from center vertex
 %   scoords:    3xK matrix of coordinates of the selected vertices
+%   vORr        if radius is of the form
+%               R         : the number of vertices selected
+%               [R C]     : the final radius
+%               [R Inf A] : the final surface area
 %
-% If distmetric is omitted, then a geodesic distance argument is assumed; N2F can 
-% still be passed as the sixth argument.
+% If distmetric is omitted, then a geodesic distance argument is assumed; 
+% N2F can still be passed as the sixth argument.
 % 
 % Computation of geodesic distances uses the Fast Marching toolbox by 
 % Gabriel Peyre (2008), http://www.ceremade.dauphine.fr/~peyre/download/
@@ -59,8 +71,8 @@ if ~isequal([size(coords,1),size(faces,1)],[3 3])
 end
 
 % node areas
-basedarea=numel(radius)==3;
-if basedarea
+based_on_area=numel(radius)==3;
+if based_on_area
     node2area=surfing_surfacearea(coords,faces,n2f);
 end
 
@@ -76,22 +88,27 @@ while true
     switch distancemetric
         % earlier versions had a typo in euclidean, so support
         % both the name with the typo and without
-        case {'euclidian','euclidean'};
+        case {'euclidian','euclidean'}
             D=surfing_eucldist(coords(:,centervertex_idx),coords)';  
             vidxs=(1:size(coords,2))'; % all vertex indices
 
         case 'geodesic'
-            [sv, sf, si,vidxs, fidxs]=surfing_subsurface(coords, faces, centervertex_idx, radius(1), n2f); % construct correct sub surface
+            % construct correct sub surface
+            [sv, sf, si,vidxs, fidxs]=surfing_subsurface(coords, faces, ...
+                                        centervertex_idx, radius(1), n2f); 
 
             % this requires the Fast Marching toolbox (Peyre)
             [D,S,Q] = perform_fast_marching_mesh(sv, sf, si);     
             
         case 'dijkstra'
-            [sv, sf, si,vidxs, fidxs]=surfing_subsurface(coords, faces, centervertex_idx, radius(1), n2f); % construct correct sub surface
+            % construct correct sub surface
+            [sv, sf, si,vidxs, fidxs]=surfing_subsurface(coords, faces, ...
+                                        centervertex_idx, radius(1), n2f); 
             D=surfing_dijkstradist(sv,sf,si,radius(1));
             
         otherwise
-            error('Unknown distance metric %s, use ''geodesic'' or ''dijkstra'' or ''euclidean''',distancemetric);
+            error(['Unknown distance metric %s, use ''geodesic'', '...
+                    '''dijkstra'' or ''euclidean'''],distancemetric);
     end
     
     nodemask=isfinite(D) & D<=radius(1); % selected nodes
@@ -101,7 +118,7 @@ while true
     end
     
     % check area
-    if basedarea && sum(node2area(vidxs(nodemask))) >= radius(3)
+    if based_on_area && sum(node2area(vidxs(nodemask))) >= radius(3)
         break;
     end
     
@@ -120,12 +137,13 @@ while true
 end
 
 % set final resutls
-if basedarea
+if based_on_area
     [dummy,is]=sort(D,'ascend');
     cumarea=cumsum(node2area(vidxs(is)));
-    selidxs=is(cumarea<=radius(3));
+    msk=cumarea<=radius(3);
+    selidxs=is(msk);
     D=D(selidxs);
-    vORr=max(cumarea(cumarea<=radius(3)));
+    vORr=max(cumarea(msk));
 elseif variableradius
     [dummy,is]=sort(D,'ascend');
     issel=is(1:radius(2));
