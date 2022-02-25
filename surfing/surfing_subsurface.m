@@ -68,7 +68,7 @@ fsel=f(:,funq);             % nodes corresponding to face indices
 [nsel,p,q]=unique(fsel(:)); % find unique nodes
 sc=c(:,nsel);                    % coordinates of selected nodes
 sf=reshape(q,3,numel(funq));     % new topology with limited number of nodes
-si=find(nsel==i); %can this be done more efficiently?
+si=arrayfun(@(x)find(nsel==x),i); %can this be done more efficiently?
 
 % transpose back if necessary
 if trn, sc=sc'; end
