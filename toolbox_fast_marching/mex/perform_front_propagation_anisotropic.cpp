@@ -42,7 +42,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     const int ndims = 6;
 
 	// output
-	int dims[3] = {w, h, d};
+    const mwSize dims[3] = {n,p,q};
 	// distance map
     plhs[0] = mxCreateNumericArray(3, dims, mxDOUBLE_CLASS, mxREAL);
 	double *dist_data = mxGetPr(plhs[0]);

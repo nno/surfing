@@ -6,10 +6,10 @@ function [vertices,faces]=surfing_generate_planar_surface(nx, ny, origin, x1, y1
 % Inputs:
 %   nx          number of vertices in first dimension
 %   ny          number of vertices in second dimension
-%   origin      (optional) 1x3 vector with coordinates of origin. 
+%   origin      (optional) 1x3 vector with coordinates of origin.
 %               Default: [0,0,0]
 %   x1          (optional) 1x3 vector with coordinates of second vertex
-%               (the origin being the first) in the first dimension. 
+%               (the origin being the first) in the first dimension.
 %               Default: [1,0,0]
 %   y1          (optional) 1x3 vector with coordinates of second vertex
 %               (the origin being the first) in the second dimension
@@ -20,10 +20,10 @@ function [vertices,faces]=surfing_generate_planar_surface(nx, ny, origin, x1, y1
 %   faces       Qx3 faces, with Q=2*(nx-1)*(ny-1)
 %
 % Example:
-%     % generate a surface 
+%     % generate a surface
 %     [v,f]=surfing_generate_planar_surface(5,2,[0,0,0],[1,0,0],[0,1,0])
 %     > v =
-%     > 
+%     >
 %     >      0     0     0
 %     >      0     1     0
 %     >      1     0     0
@@ -34,10 +34,10 @@ function [vertices,faces]=surfing_generate_planar_surface(nx, ny, origin, x1, y1
 %     >      3     1     0
 %     >      4     0     0
 %     >      4     1     0
-%     > 
-%     > 
+%     >
+%     >
 %     > f =
-%     > 
+%     >
 %     >      1     2     3
 %     >      4     3     2
 %     >      3     4     5
@@ -81,7 +81,7 @@ for i=1:nx
             q=vpos+1;
             r=vpos+ny;
             s=vpos+ny+1;
-            
+
             fpos=((i-1)*(ny-1)+j)*2-1;
             faces(fpos,:)=[p,q,r];
             faces(fpos+1,:)=[s,r,q];
@@ -95,4 +95,3 @@ function ensure_is_three_vec(x)
             numel(size(x))==2)
         error('vectors must have three numeric elements');
     end
-    
